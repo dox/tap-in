@@ -3,9 +3,11 @@ class Staff {
 	public static $table_name = 'staff';
 	
 	public $uid;
+	public $enabled;
 	public $firstname;
 	public $lastname;
 	public $code;
+	public $email;
 	public $last_tapin;
 	
 	public function __construct($lookup = null) {

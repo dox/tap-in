@@ -60,6 +60,14 @@ $totalThisWeek = $staff->totalMinutesBetweenDates(date('Y-m-d', strtotime('monda
 					<label for="code" class="form-label">Tap-In Code</label>
 					<input type="number" class="form-control" id="code" name="code" value="<?php echo $staff->code; ?>">
 				</div>
+				<div class="mb-3">
+					<label for="email" class="form-label">Email Address</label>
+					<input type="input" class="form-control" id="email" name="email" value="<?php echo $staff->email; ?>">
+				</div>
+				<div class="mb-3">
+					<input class="form-check-input" type="checkbox" value="1" id="enabled" name="enabled" <?php if ($staff->enabled == "1") { echo " checked"; } ?>>
+					  <label class="form-check-label" for="enabled">Enabled</label>
+				</div>
 				
 				<button type="submit" class="btn btn-primary">Submit</button>
 				<input type="hidden" name="uid" value="<?php echo $staff->uid; ?>" />

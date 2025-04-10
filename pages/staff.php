@@ -3,8 +3,10 @@
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	// Gather the POST data into an array
 	$data = [
+		'enabled' => isset($_POST['enabled']) ? '1' : '0',
 		'firstname' => $_POST['firstname'],
 		'lastname' => $_POST['lastname'],
+		'email' => $_POST['email'],
 		'code' => $_POST['code'],
 	];
 	

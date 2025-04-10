@@ -61,9 +61,9 @@ class Database {
 		$setParts = [];
 		foreach ($data as $column => $value) {
 			// Check if the value is empty and treat it as NULL
-			if (empty($value)) {
+			if ($value === null) {
 				$setParts[] = "$column = :$column";
-				$data[$column] = null;  // Set the value to null for binding
+				$data[$column] = null;
 			} else {
 				$setParts[] = "$column = :$column";
 			}
