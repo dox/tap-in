@@ -101,7 +101,7 @@ $totalThisWeek = $staff->totalMinutesBetweenDates(date('Y-m-d', strtotime('monda
 			foreach ($openShifts AS $shift) {
 				$shift = new Shift($shift['uid']);
 				$staff = new Staff($shift->staff_uid);
-				$staffEditURL = "index.php?page=staff_edit&uid=" . $staff->uid;
+				$shiftfEditURL = "index.php?page=shift_edit&uid=" . $shift->uid;
 				
 				if (empty($shift->shift_end)) {
 					$badgeClass = "text-bg-primary";
@@ -111,7 +111,7 @@ $totalThisWeek = $staff->totalMinutesBetweenDates(date('Y-m-d', strtotime('monda
 				
 				$output  = "<li class=\"list-group-item d-flex justify-content-between align-items-start\">";
 				$output .= "<div class=\"ms-2 me-auto\">";
-				$output .= "<div class=\"fw-bold\"><a href=\"" . $staffEditURL . "\">" . $staff->fullname() . "</a></div>";
+				$output .= "<div class=\"fw-bold\">" . $staff->fullname() . "</div>";
 				$output .= $shift->shift_start;
 				$output .= "</div>";
 				
@@ -120,7 +120,7 @@ $totalThisWeek = $staff->totalMinutesBetweenDates(date('Y-m-d', strtotime('monda
 					$shiftDurationHelper .= " " . icon('hourglass-split');
 				}
 				
-				$output .= $shiftDurationHelper . "<span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($shift->totalMinutes()) . "</span>";
+				$output .= $shiftDurationHelper . "<a href=\"" . $shiftfEditURL . "\"><span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($shift->totalMinutes()) . "</a></span></a>";
 				$output .= "</li>";
 				
 				echo $output;

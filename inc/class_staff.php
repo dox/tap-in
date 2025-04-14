@@ -65,6 +65,26 @@ class Staff {
 		}
 	}
 	
+	public function currentShiftUID() {
+		global $db;
+		
+		$checkSql = "SELECT uid FROM shifts 
+					 WHERE staff_uid = :staff_uid AND shift_end IS NULL 
+					 LIMIT 1";
+		
+		$openShift = $db->query($checkSql, [':staff_uid' => $this->uid]);
+		
+		if (empty($openShift)) {
+			return false;
+		} else {
+			$shift = new Shift($openShift[0]['uid']);
+			
+			return $shift->uid;
+		}
+	}
+	
+	
+	
 	public function totalMinutes() {
 		return $this->totalMinutesBetweenDates();
 	}

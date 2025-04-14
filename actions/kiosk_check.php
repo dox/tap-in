@@ -32,8 +32,10 @@ if (empty($staff->uid)) {
 echo '<h1>Welcome, ' . htmlspecialchars($staff->firstname) . '</h1>';
 
 if ($staff->openShift()) {
+	$currentShift = new Shift($staff->currentShiftUID());
+	
 	echo '<p>You have an open shift.</p>';
-	echo '<button class="btn btn-danger btn-lg" onclick="performShiftAction(' . $staff->uid . ', \'end\')">' . icon('stop-fill', '1.5em') . ' End Shift (' . $staff->totalMinutesBetweenDates() . ')</button>';
+	echo '<button class="btn btn-danger btn-lg" onclick="performShiftAction(' . $staff->uid . ', \'end\')">' . icon('stop-fill', '1.5em') . ' End Shift (' . convertMinutesToHours($currentShift->totalMinutes()) . ')</button>';
 } else {
 	echo '<p>You are not currently clocked in.</p>';
 	echo '<button class="btn btn-success btn-lg" onclick="performShiftAction(' . $staff->uid . ', \'start\')">' . icon('play-fill', '1.5em') . ' Start Shift</button>';
