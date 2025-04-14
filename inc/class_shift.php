@@ -41,7 +41,7 @@ class Shift {
 			. '<th scope="row"><a href="' . $staffURL . '">' . htmlspecialchars($staff->fullname()) . '</a></th>'
 			. '<td>' . htmlspecialchars($this->shift_start) . '</td>'
 			. '<td>' . htmlspecialchars($this->shift_end) . '</td>'
-			. '<td>' . convertMinutesToHours($shiftDuration) . $shiftDurationHelper . '</td>'
+			. '<td>' . $shiftDurationHelper . convertMinutesToHours($shiftDuration) . '</td>'
 			. '<td><a href="' . $shiftEditURL . '">' . icon('pencil-square') . '</a></td>'
 			. '</tr>';
 	}

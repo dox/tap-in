@@ -114,7 +114,13 @@ $totalThisWeek = $staff->totalMinutesBetweenDates(date('Y-m-d', strtotime('monda
 				$output .= "<div class=\"fw-bold\"><a href=\"" . $staffEditURL . "\">" . $staff->fullname() . "</a></div>";
 				$output .= $shift->shift_start;
 				$output .= "</div>";
-				$output .= "<span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($shift->totalMinutes()) . "</span>";
+				
+				$shiftDurationHelper = "";
+				if (is_null($shift->shift_end)) {
+					$shiftDurationHelper .= " " . icon('hourglass-split');
+				}
+				
+				$output .= $shiftDurationHelper . "<span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($shift->totalMinutes()) . "</span>";
 				$output .= "</li>";
 				
 				echo $output;
