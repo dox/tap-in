@@ -39,7 +39,7 @@ function alert($type, $title, $content) {
 }
 
 function icon(string $iconName, string $size = '1em'): string {
-	$iconPath = 'icons/' . $iconName . '.svg';  // Path to the icon file
+	$iconPath = $_SERVER["DOCUMENT_ROOT"] . '/icons/' . $iconName . '.svg';  // Path to the icon file
 
 	// Check if the requested SVG file exists
 	if (file_exists($iconPath)) {
@@ -51,9 +51,9 @@ function icon(string $iconName, string $size = '1em'): string {
 
 		return $svgContent;
 	}
-
+	
 	// If the file doesn't exist, return a default SVG
-	$defaultIconPath = 'icons/question-diamond.svg';  // Path to the default SVG
+	$defaultIconPath = $_SERVER["DOCUMENT_ROOT"] . '/icons/question-diamond.svg';  // Path to the default SVG
 	if (file_exists($defaultIconPath)) {
 		$defaultSvgContent = file_get_contents($defaultIconPath);
 		
@@ -64,7 +64,7 @@ function icon(string $iconName, string $size = '1em'): string {
 	}
 
 	// If the default SVG is missing as well, return a simple placeholder SVG
-	return '<svg xmlns="http://www.w3.org/2000/svg" width="' . $size . '" height="' . $size . '"><rect width="100%" height="100%" fill="gray" /></svg>';
+	return '<svg xmlns="http://www.w3.org/2000/svg" width="' . $size . '" height="' . $size . '" fill="currentColor"><rect width="100%" height="100%" /></svg>';
 }
 
 

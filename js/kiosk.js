@@ -20,57 +20,48 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	// Handle submit button click
-	submitBtn.addEventListener('click', function() {
+	// Handle submit button click
+	submitBtn.addEventListener('click', function () {
 		const userNumberValue = userNumber.value;
-		
-		// Create an object to send with the POST request
-		const data = { userNumber: userNumberValue };
-
-		// Send the data using the Fetch API
-		fetch('actions/kiosk_submit.php', {
+	
+		const formData = new FormData();
+		formData.append('userNumber', userNumberValue);
+	
+		fetch('actions/kiosk_check.php', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data)  // Send data as JSON
+			body: formData
 		})
-		.then(response => response.json())  // Parse JSON response
-		.then(data => {
+		.then(response => response.text())
+		.then(html => {
 			userNumber.value = '';
-			
-			// Show the modal with the appropriate message
+	
 			const modalMessage = document.getElementById('modalMessage');
-			if (data.success) {
-				modalMessage.innerHTML  = '<h1><span class="badge bg-success">SUCCESS</span></h1>';
-			} else {
-				modalMessage.innerHTML  = '<h1><span class="badge bg-danger">ERROR</span></h1>';
-			}
-			
-			modalMessage.innerHTML += '<p>' + data.message + '</p>';
-
-			// Show the modal
+			modalMessage.innerHTML = html;
+	
 			const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
 			responseModal.show();
-
-			// Auto-close the modal after 3 seconds
+	
+			// Auto-close after 10 seconds if no action taken
 			setTimeout(() => {
-				responseModal.hide();
-			}, 5000);
+				const modalEl = document.getElementById('responseModal');
+				const modalInstance = bootstrap.Modal.getInstance(modalEl);
+				if (modalInstance) modalInstance.hide();
+			}, 8000); // 8 second timeout
 		})
 		.catch(error => {
 			userNumber.value = '';
-			
+	
 			console.error('Error:', error);
 			const modalMessage = document.getElementById('modalMessage');
-			modalMessage.textContent = 'There was an error submitting the code. Please try again later.';
-
-			// Show the modal
+			modalMessage.textContent = 'Error checking shift status. Please try again.';
+	
 			const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
 			responseModal.show();
-
-			// Auto-close the modal after 3 seconds
+	
 			setTimeout(() => {
-				responseModal.hide();
+				const modalEl = document.getElementById('responseModal');
+				const modalInstance = bootstrap.Modal.getInstance(modalEl);
+				if (modalInstance) modalInstance.hide();
 			}, 3000);
 		});
 	});

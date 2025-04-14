@@ -1,6 +1,33 @@
 <?php
 include_once("../inc/autoload.php");
 
+$userId = $_POST['userId'] ?? '';
+$action = $_POST['action'] ?? '';
+
+if (!$userId || !$action || !in_array($action, ['start', 'end'])) {
+	echo '<p>Invalid request.</p>';
+	exit;
+}
+
+if ($action === 'start') {
+	$shiftData = [
+		'staff_uid'    => $userId,
+		'shift_start'  => date('c')
+	];
+	$success = $db->create('shifts', $shiftData);
+	echo '<h1><span class="badge bg-success">Shift Started</span></h1>';
+} else {
+	$shiftData = [
+		'shift_end' => date('c')
+	];
+	$success = $db->update('shifts', $shiftData, 'staff_uid', $userId);
+	echo '<h1><span class="badge bg-success">Shift Ended</span></h1>';
+}
+
+/*
+
+include_once("../inc/autoload.php");
+
 header('Content-Type: application/json');
 
 $input = json_decode(file_get_contents('php://input'), true);
@@ -54,18 +81,13 @@ if ($staff->openShift()) {
 	];
 	$result = 'success';
 } else {
-	// new shift
-	$shiftData = [
-		'staff_uid'    => $staff->uid,
-		'shift_start'  => date('c')
-	];
-	$success = $db->create('shifts', $shiftData);
+	// attempted to close shift
 	
 	$response = [
-		'success' => true,
-		'message' => "Shift started for " . htmlspecialchars($userNumber) . " " . $staff->fullname()
+		'success' => false,
+		'message' => "Attempted to close shift for " . $staff->fullname() . " when no shift existed"
 	];
-	$result = 'success';
+	$result = 'warning';
 	
 }
 $log->create([
@@ -75,3 +97,5 @@ $log->create([
 ]);
 
 echo json_encode($response);
+
+*/
