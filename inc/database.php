@@ -39,6 +39,8 @@ class Database {
 	}
 	
 	public function create($table, $data) {
+		global $log;
+		
 		// Dynamically build the columns and placeholders
 		$columns = implode(", ", array_keys($data));
 		$placeholders = ":" . implode(", :", array_keys($data));
@@ -48,15 +50,47 @@ class Database {
 		$stmt = $this->pdo->prepare($sql);
 	
 		// Bind the parameters dynamically
+		$updates = [];
 		foreach ($data as $key => $value) {
 			$stmt->bindValue(":$key", $value);
+			
+			$formattedValue = is_scalar($value) ? (string)$value : json_encode($value);
+			$updates[] = "$column = $formattedValue";
 		}
-	
-		// Execute the query and return the result (true/false)
-		return $stmt->execute();
+		
+		// Execute the query
+		$result = $stmt->execute();
+		if ($result == 1) {
+			$log->create([
+				'category'    => $table,
+				'result'      => 'success',
+				'description' => sprintf(
+					'Inserted into table %s with values: %s where uid = %s',
+					$table,
+					implode(", ", $updates),
+					$whereValue
+				),
+			]);
+		} else {
+			$log->create([
+				'category'    => $table,
+				'result'      => 'danger',
+				'description' => sprintf(
+					'Attempted to insert into table %s with values: %s where uid = %s',
+					$table,
+					implode(", ", $updates),
+					$whereValue
+				),
+			]);
+		}
+		
+		// return the result (true/false)
+		return $result;
 	}
 	
 	public function update($table, $data, $whereColumn, $whereValue) {
+		global $log;
+		
 		// Dynamically build the column-value pairs for the SET part of the query
 		$setParts = [];
 		foreach ($data as $column => $value) {
@@ -75,16 +109,46 @@ class Database {
 		$stmt = $this->pdo->prepare($sql);
 		
 		// Bind the parameters dynamically for the SET part
+		$updates = [];
 		foreach ($data as $column => $value) {
 			// Bind the value (including null if the value is empty)
 			$stmt->bindValue(":$column", $value, $value === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+			
+			$formattedValue = is_scalar($value) ? (string)$value : json_encode($value);
+			$updates[] = "$column = $formattedValue";
 		}
 	
 		// Bind the WHERE clause parameter
 		$stmt->bindValue(':whereValue', $whereValue);
 		
-		// Execute the query and return the result (true/false)
-		return $stmt->execute();
+		// Execute the query
+		$result = $stmt->execute();
+		if ($result == 1) {
+			$log->create([
+				'category'    => $table,
+				'result'      => 'success',
+				'description' => sprintf(
+					'Updated table %s with values: %s where uid = %s',
+					$table,
+					implode(", ", $updates),
+					$whereValue
+				),
+			]);
+		} else {
+			$log->create([
+				'category'    => $table,
+				'result'      => 'danger',
+				'description' => sprintf(
+					'Attempted to update table %s with values: %s where uid = %s',
+					$table,
+					implode(", ", $updates),
+					$whereValue
+				),
+			]);
+		}
+		
+		// return the result (true/false)
+		return $result;
 	}
 }
 

@@ -52,9 +52,13 @@ include_once("inc/autoload.php");
 			</div>
 		</div>
 		
+		<script>
+		// set the modal timeout to a global variable
+		window.kioskTimeout = <?php echo (setting('kiosk_modal_timeout')* 1000); ?>
+		</script>
+		
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 		<script src="js/main.js"></script>
-		<script src="js/kiosk.js"></script>
 	</body>
 </html>
 
@@ -73,12 +77,12 @@ function performShiftAction(userId, action) {
 		const modalMessage = document.getElementById('modalMessage');
 		modalMessage.innerHTML = result;
 
-		// Auto-close after 3 seconds
+		// Auto-close after kiosk_modal_fail_timeout seconds
 		setTimeout(() => {
 			const modalEl = document.getElementById('responseModal');
 			const modalInstance = bootstrap.Modal.getInstance(modalEl);
 			modalInstance.hide();
-		}, 10000); // 5 second timeout
+		}, <?php echo (setting('kiosk_modal_timeout')* 1000); ?>);
 	})
 	.catch(error => {
 		console.error('Error:', error);

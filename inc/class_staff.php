@@ -7,6 +7,7 @@ class Staff {
 	public $firstname;
 	public $lastname;
 	public $code;
+	public $category;
 	public $email;
 	public $last_tapin;
 	

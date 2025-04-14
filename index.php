@@ -1,7 +1,6 @@
 <?php
 include_once("inc/autoload.php");
 requireLogin(); // Redirects if not logged in
-
 ?>
 
 <!doctype html>

@@ -3,6 +3,8 @@ $shift = new Shift($_GET['uid']);
 $staff = new Staff($shift->staff_uid);
 $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <h1>Shift Edit for <?php echo $staff->fullname(); ?></h1>
 
@@ -21,17 +23,57 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 			}
 			?>
 		</select>
-		<div id="emailHelp" class="form-text">Helper text.</div>
 	</div>
 	<div class="mb-3">
 		<label for="shift_start" class="form-label">Shift Start Time</label>
 		<input type="input" class="form-control" id="shift_start" name="shift_start" value="<?php echo $shift->shift_start; ?>">
+		
 	</div>
 	<div class="mb-3">
 		<label for="shift_end" class="form-label">Shift End Time</label>
-		<input type="input" class="form-control" id="shift_end" name="shift_end" value="<?php echo $shift->shift_end; ?>">
+
+		<div class="input-group">
+			<input type="input" class="form-control" id="shift_end" name="shift_end" value="<?php echo $shift->shift_end; ?>">
+			<button class="btn btn-outline-secondary" type="button" id="clearEndDate">Clear</button>
+		</div>
+		
+		
 	</div>
 	
 	<button type="submit" class="btn btn-primary">Submit</button>
+	<button type="submit" class="btn btn-danger" disabled>Delete</button>
 	<input type="hidden" name="uid" value="<?php echo $shift->uid; ?>" />
 </form>
+
+<script>
+const minEndDate = "<?php echo $shift->shift_start; ?>";
+
+const shift_startPicker = flatpickr("#shift_start", {
+	enableTime: true,
+	dateFormat: "Y-m-d H:i",
+	time_24hr: true,
+	minuteIncrement: 1,
+	onChange: function(selectedDates) {
+		if (selectedDates.length > 0) {
+			// Set the minimum date of the end picker to the selected start date
+			shift_EndPicker.set("minDate", selectedDates[0]);
+	
+			// Optional: If end is before start, clear it
+			if (shift_EndPicker.selectedDates[0] && shift_EndPicker.selectedDates[0] < selectedDates[0]) {
+				shift_EndPicker.clear();
+			}
+		}
+	}
+});
+const shift_EndPicker = flatpickr("#shift_end", {
+	enableTime: true,
+	dateFormat: "Y-m-d H:i",
+	time_24hr: true,
+	minuteIncrement: 1,
+	minDate: minEndDate
+});
+
+document.getElementById("clearEndDate").addEventListener("click", function () {
+	shift_EndPicker.clear();
+});
+</script>

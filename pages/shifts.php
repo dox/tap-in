@@ -8,6 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		'shift_end' => $_POST['shift_end'],
 	];
 	
+	if (empty($_POST['shift_end'])) {
+		$data['shift_end'] = null;
+	}
+	
 	// Update the shift record in the database
 	$updateSuccess = $db->update('shifts', $data, 'uid', $_POST['uid']);
 
@@ -18,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 
-$sql = "SELECT * FROM shifts ORDER BY shift_start DESC";
+$sql = "SELECT * FROM shifts ORDER BY uid DESC";
 $shiftsAll = $db->get($sql);
 ?>
 

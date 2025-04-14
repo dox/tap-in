@@ -61,6 +61,21 @@ $totalThisWeek = $staff->totalMinutesBetweenDates(date('Y-m-d', strtotime('monda
 					<input type="number" class="form-control" id="code" name="code" value="<?php echo $staff->code; ?>">
 				</div>
 				<div class="mb-3">
+					<label for="category" class="form-label">Category</label>
+					<select id="category" name="category" class="form-select">
+						<?php
+						$categories = explode(",",setting('staff_categories'));
+						
+						foreach ($categories as $category) {
+							$selected = ($category == $staff->category) ? " selected" : "";
+						
+							// Output the option tag directly
+							echo "<option value='" . htmlspecialchars($category) . "'$selected>" . htmlspecialchars($category) . "</option>";
+						}
+						?>
+					</select>
+				</div>
+				<div class="mb-3">
 					<label for="email" class="form-label">Email Address</label>
 					<input type="input" class="form-control" id="email" name="email" value="<?php echo $staff->email; ?>">
 				</div>
@@ -80,7 +95,7 @@ $totalThisWeek = $staff->totalMinutesBetweenDates(date('Y-m-d', strtotime('monda
 			<?php
 			$limit = setting('staff_previous_shifts_display');
 			
-			$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $staff->uid . "' ORDER BY shift_start DESC LIMIT " . $limit;
+			$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $staff->uid . "' ORDER BY uid DESC LIMIT " . $limit;
 			$openShifts = $db->get($sql);
 			
 			foreach ($openShifts AS $shift) {

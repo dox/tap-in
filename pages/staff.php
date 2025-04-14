@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		'enabled' => isset($_POST['enabled']) ? '1' : '0',
 		'firstname' => $_POST['firstname'],
 		'lastname' => $_POST['lastname'],
+		'category' => $_POST['category'],
 		'email' => $_POST['email'],
 		'code' => $_POST['code'],
 	];
