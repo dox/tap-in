@@ -1,7 +1,7 @@
 <?php
 $uid = $_GET['uid'] ?? null;
 $staff = $uid ? new Staff($uid) : new Staff(); // assumes Staff() can init blank
-$staff->tapout();
+
 // Show stats only for existing staff
 if ($uid) {
 	$totalHours = $staff->totalMinutesBetweenDates();
@@ -91,15 +91,16 @@ if ($uid) {
 					$badgeClass = empty($shift->shift_end) ? "text-bg-primary" : "text-bg-success";
 					$hours = convertMinutesToHours($shift->totalMinutes());
 					$icon = is_null($shift->shift_end) ? " " . icon('hourglass-split') : "";
-					echo <<<HTML
-					<li class="list-group-item d-flex justify-content-between align-items-start">
-						<div class="ms-2 me-auto">
-							<div class="fw-bold">{$staff->fullname()}</div>
-							{$shift->shift_start}
-						</div>
-						$icon<a href="$url"><span class="badge $badgeClass rounded-pill">$hours</span></a>
-					</li>
-					HTML;
+					
+					$output  = "<li class=\"list-group-item d-flex justify-content-between align-items-start\">";
+					$output .= "<div class=\"ms-2 me-auto\">";
+					$output .= "<div class=\"fw-bold\">" . $staff->fullname() . "</div>";
+					$output .= dateDisplay($shift->shift_start, true);
+					$output .= "</div>";
+					$output .= $icon . "<a href=\"" . $url . "\"><span class=\"badge " . $badgeClass . " . rounded-pill\">" . $hours . "</span></a>";
+					$output .= "</li>";
+					
+					echo $output;
 				}
 				?>
 			</ol>

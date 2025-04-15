@@ -39,8 +39,8 @@ class Shift {
 		// Return the table row as a string, directly building it
 		return '<tr>'
 			. '<th scope="row"><a href="' . $staffURL . '">' . htmlspecialchars($staff->fullname()) . '</a></th>'
-			. '<td>' . htmlspecialchars($this->shift_start) . '</td>'
-			. '<td>' . htmlspecialchars($this->shift_end) . '</td>'
+			. '<td>' . dateDisplay($this->shift_start, true) . '</td>'
+			. '<td>' . dateDisplay($this->shift_end, true) . '</td>'
 			. '<td>' . $shiftDurationHelper . convertMinutesToHours($shiftDuration) . '</td>'
 			. '<td><a href="' . $shiftEditURL . '">' . icon('pencil-square') . '</a></td>'
 			. '</tr>';

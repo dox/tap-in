@@ -22,6 +22,7 @@
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="index.php?page=reports"><?php echo icon('cloud-download'); ?> Reports</a></li>
 							<li><a class="dropdown-item" href="index.php?page=settings"><?php echo icon('gear'); ?> Settings</a></li>
 							<li><a class="dropdown-item" href="index.php?page=logs"><?php echo icon('search'); ?> Logs</a></li>
 							<li><hr class="dropdown-divider"></li>

@@ -177,7 +177,7 @@ class Staff {
 		return '<tr>'
 			. '<th scope="row"><a href="' . $staffURL . '">' . htmlspecialchars($this->fullname()) . '</a></th>'
 			. '<td><kbd>' . htmlspecialchars($this->code) . '</kbd></td>'
-			. '<td>' . htmlspecialchars($this->last_tapin) . '</td>'
+			. '<td>' . dateDisplay($this->last_tapin, true) . '</td>'
 			. '</tr>';
 	}
 	

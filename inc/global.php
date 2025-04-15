@@ -83,4 +83,17 @@ function convertMinutesToHours($minutes) {
 	return sprintf('%02d:%02d', $hours, $minutes); // Format as hh:mm
 }
 
+function dateDisplay($date = null, $longFormat = false) {
+
+	if ($longFormat == true) {
+		$dateFormat = setting('datetime_format_long');
+	} else {
+		$dateFormat = setting('datetime_format_short');
+	}
+
+	$returnDate = date($dateFormat, strtotime($date));
+
+	return $returnDate;
+}
+
 ?>
