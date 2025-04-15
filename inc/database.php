@@ -90,64 +90,77 @@ class Database {
 	
 	public function update($table, $data, $whereColumn, $whereValue) {
 		global $log;
-		
-		// Dynamically build the column-value pairs for the SET part of the query
-		$setParts = [];
-		foreach ($data as $column => $value) {
-			// Check if the value is empty and treat it as NULL
-			if ($value === null) {
-				$setParts[] = "$column = :$column";
-				$data[$column] = null;
-			} else {
-				$setParts[] = "$column = :$column";
-			}
-		}
-		$setClause = implode(", ", $setParts);
-		
-		// Prepare the SQL query
-		$sql = "UPDATE $table SET $setClause WHERE $whereColumn = :whereValue";
-		$stmt = $this->pdo->prepare($sql);
-		
-		// Bind the parameters dynamically for the SET part
-		$updates = [];
-		foreach ($data as $column => $value) {
-			// Bind the value (including null if the value is empty)
-			$stmt->bindValue(":$column", $value, $value === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-			
-			$formattedValue = is_scalar($value) ? (string)$value : json_encode($value);
-			$updates[] = "$column = $formattedValue";
-		}
 	
-		// Bind the WHERE clause parameter
-		$stmt->bindValue(':whereValue', $whereValue);
-		
-		// Execute the query
-		$result = $stmt->execute();
-		if ($result == 1) {
-			$log->create([
-				'category'    => $table,
-				'result'      => 'success',
-				'description' => sprintf(
-					'Updated table %s with values: %s where uid = %s',
-					$table,
-					implode(", ", $updates),
-					$whereValue
-				),
-			]);
-		} else {
+		// Fetch current row from database
+		$sqlSelect = "SELECT * FROM $table WHERE $whereColumn = :whereValue";
+		$stmtSelect = $this->pdo->prepare($sqlSelect);
+		$stmtSelect->bindValue(':whereValue', $whereValue);
+		$stmtSelect->execute();
+		$currentRow = $stmtSelect->fetch(PDO::FETCH_ASSOC);
+	
+		if (!$currentRow) {
 			$log->create([
 				'category'    => $table,
 				'result'      => 'danger',
-				'description' => sprintf(
-					'Attempted to update table %s with values: %s where uid = %s',
-					$table,
-					implode(", ", $updates),
-					$whereValue
-				),
+				'description' => "Record not found for update where $whereColumn = $whereValue",
 			]);
+			return false;
 		}
-		
-		// return the result (true/false)
+	
+		// Determine which values have changed
+		$setParts = [];
+		$updates = [];
+		$params = [];
+		foreach ($data as $column => $newValue) {
+			$currentValue = $currentRow[$column] ?? null;
+	
+			// Normalize nulls and string types for fair comparison
+			if ($newValue === null) $newValue = null;
+			if ($currentValue === null) $currentValue = null;
+	
+			// Compare using stringified values for general cases
+			if ((string)$currentValue !== (string)$newValue) {
+				$setParts[] = "$column = :$column";
+				$params[":$column"] = $newValue;
+				$updates[] = "$column = " . (is_scalar($newValue) ? (string)$newValue : json_encode($newValue));
+			}
+		}
+	
+		// If nothing has changed, skip the update
+		if (empty($setParts)) {
+			$log->create([
+				'category'    => $table,
+				'result'      => 'info',
+				'description' => "No changes detected for $table where $whereColumn = $whereValue",
+			]);
+			return true; // nothing to do, but not a failure
+		}
+	
+		// Build and run the update query
+		$setClause = implode(", ", $setParts);
+		$sqlUpdate = "UPDATE $table SET $setClause WHERE $whereColumn = :whereValue";
+		$stmtUpdate = $this->pdo->prepare($sqlUpdate);
+	
+		// Bind changed values
+		foreach ($params as $param => $value) {
+			$stmtUpdate->bindValue($param, $value, $value === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+		}
+		$stmtUpdate->bindValue(':whereValue', $whereValue);
+	
+		$result = $stmtUpdate->execute();
+	
+		$log->create([
+			'category'    => $table,
+			'result'      => $result ? 'success' : 'danger',
+			'description' => sprintf(
+				'Updated table %s with values: %s where %s = %s',
+				$table,
+				implode(", ", $updates),
+				$whereColumn,
+				$whereValue
+			),
+		]);
+	
 		return $result;
 	}
 }

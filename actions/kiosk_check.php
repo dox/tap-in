@@ -31,7 +31,7 @@ if (empty($staff->uid)) {
 
 echo '<h1>Welcome, ' . htmlspecialchars($staff->firstname) . '</h1>';
 
-if ($staff->openShift()) {
+if ($staff->currentShiftUID()) {
 	$currentShift = new Shift($staff->currentShiftUID());
 	
 	echo '<p>You have an open shift.</p>';

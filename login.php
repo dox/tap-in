@@ -10,7 +10,7 @@ require_once 'inc/autoload.php';
 	<body>
 	<div class="container text-center">
 		<div class="row justify-content-center pt-5">
-			<div class="col-4">
+			<div class="col-12 col-sm-8 col-md-6 col-lg-4 mx-auto">
 				<?php
 				if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					if ($user->login($_POST['username'], $_POST['password'])) {
@@ -42,7 +42,7 @@ require_once 'inc/autoload.php';
 						  Remember me
 						</label>
 					  </div>-->
-					  <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+					  <button class="btn btn-primary w-100 py-2 my-3" type="submit">Sign in</button>
 					  <?php if (!empty($error)) echo "<p>$error</p>"; ?>
 				  
 					  <p class="mt-5 mb-3 text-body-secondary">© 2025</p>

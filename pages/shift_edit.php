@@ -6,7 +6,7 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<h1>Shift Edit for <?php echo $staff->fullname(); ?></h1>
+<h1><?php echo icon('hourglass-split', '1em'); ?> Shift Edit for <?php echo $staff->fullname(); ?></h1>
 
 <form method="POST" action="index.php?page=shifts">
 	<div class="mb-3">

@@ -1,8 +1,25 @@
 <?php
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	// Gather the POST data into an array
+	$data = [
+		'value' => $_POST['value']
+	];
+	
+	// Update the shift record in the database
+	$updateSuccess = $db->update('settings', $data, 'uid', $_POST['uid']);
+
+	if ($updateSuccess) {
+		echo alert('success', "Success!", "Setting updated successfully!");
+	} else {
+		echo alert('danger', "Error!", "Failed to update setting.");
+	}
+}
+
 $sql = "SELECT * FROM settings ORDER BY name ASC";
 $settingsAll = $db->get($sql);
 ?>
-<h1>Settings</h1>
+<h1><?php echo icon('gear', '1em'); ?> Settings</h1>
 
 <?php
 echo alert('danger', "Warning!", "Making changes to these settings can disrupt the running of this site.  Proceed with caution.");

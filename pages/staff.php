@@ -1,32 +1,41 @@
 <?php
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	// Gather the POST data into an array
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	$uid = $_POST['uid'] ?? null;
 	$data = [
-		'enabled' => isset($_POST['enabled']) ? '1' : '0',
 		'firstname' => $_POST['firstname'],
-		'lastname' => $_POST['lastname'],
-		'category' => $_POST['category'],
-		'email' => $_POST['email'],
-		'code' => $_POST['code'],
+		'lastname'  => $_POST['lastname'],
+		'code'      => $_POST['code'],
+		'category'  => $_POST['category'],
+		'email'     => $_POST['email'],
+		'enabled'   => isset($_POST['enabled']) ? 1 : 0,
 	];
-	
-	// Update the shift record in the database
-	$updateSuccess = $db->update('staff', $data, 'uid', $_POST['uid']);
 
-	if ($updateSuccess) {
+	if ($uid) {
+		$dbAttempt = $db->update('staff', $data, 'uid', $uid);
+	} else {
+		$dbAttempt = $db->create('staff', $data);
+	}
+	
+	if ($dbAttempt) {
 		echo alert('success', "Success!", "Staff updated successfully!");
 	} else {
 		echo alert('danger', "Error!", "Failed to update staff.");
 	}
 }
 
+
+
 $sql = "SELECT * FROM staff ORDER BY lastname ASC";
 $staffAll = $db->get($sql);
 
 ?>
 
-<h1>Staff</h1>
+<h1><?php echo icon('person', '1em'); ?> Staff</h1>
+<div class="pb-3 text-end">
+	<a class="btn btn-success" href="index.php?page=staff_edit" role="button"><?php echo icon('person-add'); ?> Add New</a>
+</div>
+
 <?php
 $table  = "<table class=\"table\">";
 $table .= "<thead>";

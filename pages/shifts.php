@@ -26,28 +26,69 @@ $sql = "SELECT * FROM shifts ORDER BY uid DESC";
 $shiftsAll = $db->get($sql);
 ?>
 
-<h1>Shifts</h1>
+<h1><?php echo icon('hourglass-split', '1em'); ?> Shifts</h1>
 <?php
-$table  = "<table class=\"table\">";
-$table .= "<thead>";
-$table .= "<tr>";
-$table .= "<th scope=\"col\">Name</th>";
-$table .= "<th scope=\"col\">Shift Start</th>";
-$table .= "<th scope=\"col\">Shift End</th>";
-$table .= "<th scope=\"col\">Duration</th>";
-$table .= "<th scope=\"col\"></th>";
-$table .= "</tr>";
-$table .= "</thead>";
-$table .= "<tbody>";
+// Set reference dates in 'Y-m-d' format
+$todayStr = (new DateTime('today'))->format('Y-m-d');
+$yesterdayStr = (new DateTime('yesterday'))->format('Y-m-d');
+$mondayThisWeekStr = (new DateTime('monday this week'))->format('Y-m-d');
+$mondayLastWeekStr = (new DateTime('monday this week'))->modify('-7 days')->format('Y-m-d');
 
-foreach ($shiftsAll as $shift) {
-	$shift = new Shift($shift['uid']);
-	$table .= $shift->tableRow();
+// Initialise groups
+$grouped = [
+	'Today' => [],
+	'Yesterday' => [],
+	'This Week' => [],
+	'Last Week' => [],
+	'Older' => [],
+];
+
+foreach ($shiftsAll as $shiftData) {
+	$shift = new Shift($shiftData['uid']);
+	
+	// Extract just the date part of shift_start
+	$shiftDateStr = (new DateTime($shift->shift_start))->format('Y-m-d');
+
+	if ($shiftDateStr === $todayStr) {
+		$grouped['Today'][] = $shift;
+	} elseif ($shiftDateStr === $yesterdayStr) {
+		$grouped['Yesterday'][] = $shift;
+	} elseif ($shiftDateStr >= $mondayThisWeekStr) {
+		$grouped['This Week'][] = $shift;
+	} elseif ($shiftDateStr >= $mondayLastWeekStr && $shiftDateStr < $mondayThisWeekStr) {
+		$grouped['Last Week'][] = $shift;
+	} else {
+		$grouped['Older'][] = $shift;
+	}
 }
 
-$table .= "</tbody>";
-$table .= "</table>";
+// Output the grouped shifts
+foreach ($grouped as $label => $shiftsGroup) {
+	if (empty($shiftsGroup)) continue;
 
-echo $table;
-
+	$table  = "<h2>{$label}</h2>";
+	
+	$table .= "<table class=\"table\">";
+	$table .= "<thead>";
+	$table .= "<tr>";
+	$table .= "<th scope=\"col\">Name</th>";
+	$table .= "<th scope=\"col\">Shift Start</th>";
+	$table .= "<th scope=\"col\">Shift End</th>";
+	$table .= "<th scope=\"col\">Duration</th>";
+	$table .= "<th scope=\"col\"></th>";
+	$table .= "</tr>";
+	$table .= "</thead>";
+	$table .= "<tbody>";
+	
+	foreach ($shiftsGroup as $shift) {
+		//echo "<li>{$shift->shift_start} — {$shift->staff_uid}</li>\n";
+		$table .= $shift->tableRow();
+	}
+	//echo "</ul>\n";
+	
+	$table .= "</tbody>";
+	$table .= "</table>";
+	
+	echo $table;
+}
 ?>

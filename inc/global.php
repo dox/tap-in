@@ -38,7 +38,7 @@ function alert($type, $title, $content) {
 	return $output;
 }
 
-function icon(string $iconName, string $size = '1em'): string {
+function icon(string $iconName, string $size = '16'): string {
 	$iconPath = $_SERVER["DOCUMENT_ROOT"] . '/icons/' . $iconName . '.svg';  // Path to the icon file
 
 	// Check if the requested SVG file exists

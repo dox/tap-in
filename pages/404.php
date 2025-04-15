@@ -1,12 +1,22 @@
+<?php
+$logData = [
+	'category' => 'system',
+	'result'   => 'error',
+	'description' => '404 for ' . $_SERVER['REQUEST_URI']
+];
+$log->create($logData);
+?>
+
 <div class="container my-5">
-  <div class="position-relative p-5 text-center text-muted bg-body border border-dashed rounded-5">
-	<h1 class="text-body-emphasis mb-5">404: Alas! The Page Hath Vanished!</h1>
-	<p class="mb-4">It appears the page thou sought after hath taken its leave, as if a mischievous sprite led it astray. We know not where it has gone—perchance it wandered off to a distant land, or perhaps it hath been carried away by the winds of time.</p>
-	<p class="mb-4">In any case, thou art left with naught but this humble message.</p>
-	<p class="mb-4">Do feel free to return whence thou came or seek another path through our pages.</p>
+  <div class="position-relative p-5 text-center bg-body border border-dashed rounded-5">
+	<?php echo icon('exclamation-circle-fill', '5em'); ?>
 	
-	<p class="mb-4">We beg thy pardon for this most unfortunate occurrence.</p>
-	</p>
+	<h1 class="text-body-emphasis mb-5">404: Page Not Found</h1>
+	<p class="mb-4">It appears the page you have attempted to access does not exist.</p>
+	<div class="mb-4 alert alert-danger" role="alert">
+		<span class=" font-monospace"><?php echo $_SERVER['REQUEST_URI']; ?></span>
+	</div>
+	<p class="mb-4">This error has been logged.</p>
 	<button class="btn btn-primary px-5 mb-5" type="button" onclick="history.back()">
 	  Go back to whence ye came
 	</button>

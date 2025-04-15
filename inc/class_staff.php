@@ -49,7 +49,7 @@ class Staff {
 		return $this->lastname . ", " . $this->firstname;
 	}
 	
-	public function openShift() {
+	/*public function openShift() {
 		global $db;
 		
 		$checkSql = "SELECT uid FROM shifts 
@@ -64,7 +64,7 @@ class Staff {
 			return true;
 		}
 	}
-	
+	*/
 	public function currentShiftUID() {
 		global $db;
 		
@@ -83,6 +83,17 @@ class Staff {
 		}
 	}
 	
+	public function recentShifts() {
+		global $db;
+		
+		$limit = setting('staff_previous_shifts_display');
+		
+		$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $this->uid . "' ORDER BY uid DESC LIMIT " . $limit;
+		
+		$shifts = $db->get($sql);
+		
+		return $shifts;
+	}
 	
 	
 	public function totalMinutes() {
