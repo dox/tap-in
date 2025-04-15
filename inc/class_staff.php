@@ -49,22 +49,60 @@ class Staff {
 		return $this->lastname . ", " . $this->firstname;
 	}
 	
-	/*public function openShift() {
-		global $db;
+	public function tapin() {
+		global $db, $log;
 		
-		$checkSql = "SELECT uid FROM shifts 
-					 WHERE staff_uid = :staff_uid AND shift_end IS NULL 
-					 LIMIT 1";
-		
-		$openShift = $db->query($checkSql, [':staff_uid' => $this->uid]);
-		
-		if (empty($openShift)) {
-			return false;
-		} else {
+		if (!$this->currentShiftUID()) {
+			$shiftData = [
+				'staff_uid'    => $this->uid,
+				'shift_start'  => date('c')
+			];
+			$success = $db->create('shifts', $shiftData);
+			
+			// update the last tap-in date for this user
+			$staffData['last_tapin'] = date('c');
+			$db->update('staff', $staffData, 'uid', $this->uid);
+			
 			return true;
+		} else {
+			$logData = [
+				'category' => 'staff',
+				'result'   => 'warning',
+				'description' => 'Attempted to tapin when there was already an open shift for ' . $this->fullname()
+			];
+			$log->create($logData);
+			
+			return false;
 		}
 	}
-	*/
+	
+	public function tapout() {
+		global $db, $log;
+		
+		if ($this->currentShiftUID()) {
+			$shiftData = [
+				'staff_uid'    => $this->uid,
+				'shift_end'  => date('c')
+			];
+			$success = $db->update('shifts', $shiftData, 'uid', $this->currentShiftUID());
+			
+			// update the last tap-in date for this user
+			$staffData['last_tapin'] = date('c');
+			$db->update('staff', $staffData, 'uid', $this->uid);
+			
+			return true;
+		} else {
+			$logData = [
+				'category' => 'staff',
+				'result'   => 'warning',
+				'description' => 'Attempted to close shift when no open shift existed for ' . $this->fullname()
+			];
+			$log->create($logData);
+			
+			return false;
+		}
+	}
+	
 	public function currentShiftUID() {
 		global $db;
 		

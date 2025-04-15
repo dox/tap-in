@@ -1,7 +1,7 @@
 <?php
 $uid = $_GET['uid'] ?? null;
 $staff = $uid ? new Staff($uid) : new Staff(); // assumes Staff() can init blank
-
+$staff->tapout();
 // Show stats only for existing staff
 if ($uid) {
 	$totalHours = $staff->totalMinutesBetweenDates();

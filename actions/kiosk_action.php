@@ -9,17 +9,12 @@ if (!$userId || !$action || !in_array($action, ['start', 'end'])) {
 	exit;
 }
 
+$staff = new Staff($userId);
+
 if ($action === 'start') {
-	$shiftData = [
-		'staff_uid'    => $userId,
-		'shift_start'  => date('c')
-	];
-	$success = $db->create('shifts', $shiftData);
+	$staff->tapin();
 	echo '<h1><span class="badge bg-success">Shift Started</span></h1>';
 } else {
-	$shiftData = [
-		'shift_end' => date('c')
-	];
-	$success = $db->update('shifts', $shiftData, 'staff_uid', $userId);
+	$staff->tapout();
 	echo '<h1><span class="badge bg-success">Shift Ended</span></h1>';
 }
