@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-$sql = "SELECT * FROM staff ORDER BY lastname ASC";
+$sql = "SELECT * FROM staff ORDER BY enabled DESC, lastname ASC, firstname ASC";
 $staffAll = $db->get($sql);
 
 ?>

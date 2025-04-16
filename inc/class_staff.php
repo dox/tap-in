@@ -172,9 +172,13 @@ class Staff {
 	
 	public function tableRow() {
 		$staffURL = "index.php?page=staff_edit&uid=" . $this->uid;
-
+		
+		$class = "";
+		if ($this->enabled == 0) {
+			$class = "table-secondary";
+		}
 		// Return the table row as a string, directly building it
-		return '<tr>'
+		return '<tr class=' . $class . '>'
 			. '<th scope="row"><a href="' . $staffURL . '">' . htmlspecialchars($this->fullname()) . '</a></th>'
 			. '<td><kbd>' . htmlspecialchars($this->code) . '</kbd></td>'
 			. '<td>' . dateDisplay($this->last_tapin, true) . '</td>'
