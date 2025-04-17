@@ -74,6 +74,14 @@ for ($i = 0; $i < $xDays; $i++) {
 ksort($lastXDays);
 ?>
 <script>
+const rawDates = [<?php echo implode(", ", array_keys($lastXDays)); ?>];
+
+const formattedDates = rawDates.map(dateStr => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-GB', { month: 'short', day: '2-digit' });
+  // Output: "08 Apr", "09 Apr", etc.
+});
+
 var options = {
   chart: {
 	type: 'bar'
@@ -83,7 +91,19 @@ var options = {
 	data: [<?php echo implode(", ", $lastXDays); ?>]
   }],
   xaxis: {
-	categories: [<?php echo implode(", ", array_keys($lastXDays)); ?>]
+	categories: formattedDates
+  },
+  yaxis: {
+	labels: {
+	  formatter: function (val) {
+		return val.toFixed(1);
+	  }
+	}
+  },
+  dataLabels: {
+	formatter: function (val) {
+	  return val.toFixed(1);
+	}
   }
 }
 
