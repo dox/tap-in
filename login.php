@@ -43,8 +43,8 @@ require_once 'inc/autoload.php';
 						</label>
 					  </div>-->
 					  <button class="btn btn-primary w-100 py-2 my-3" type="submit">Sign in</button>
-					  <?php if (!empty($error)) echo "<p>$error</p>"; ?>
-				  
+					  <a href="kiosk.php" class="btn btn-success w-50 py-2 my-3" type="submit">Kiosk</a>
+					  
 					  <p class="mt-5 mb-3 text-body-secondary">© 2025</p>
 					</form>
 			</div>
