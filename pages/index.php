@@ -1,11 +1,11 @@
 <div class="container">
 	<div class="row align-items-start">
-		<div class="col-8">
+		<div class="col-md-8">
 			Total Worked Hours
 			<div id="chart">
 			</div>
 		</div>
-		<div class="col-4">
+		<div class="col-md-4">
 			<h1>Recent Shifts</h1>
 			
 			<ol class="list-group list-group">

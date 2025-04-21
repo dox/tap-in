@@ -37,7 +37,7 @@ if ($uid) {
 	<?php endif; ?>
 
 	<div class="row">
-		<div class="col-8">
+		<div class="col-md-8">
 			<form class="needs-validation" method="POST" action="index.php?page=staff" novalidate>
 				<div class="mb-3">
 					<label for="firstname" class="form-label">First Name</label>
@@ -81,7 +81,7 @@ if ($uid) {
 		</div>
 
 		<?php if ($uid): ?>
-		<div class="col-4">
+		<div class="col-md-4">
 			<div id="chart"></div>
 			Recent Shifts
 			<ol class="list-group">
