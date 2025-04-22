@@ -19,7 +19,7 @@ foreach ($allowed_subnets as $subnet) {
 
 if (!$allowed) {
 	http_response_code(403);
-	exit('Access denied.');
+	exit('You cannot access this page from your current location');
 }
 ?>
 
