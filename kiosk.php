@@ -1,5 +1,26 @@
 <?php
 include_once("inc/autoload.php");
+
+function ip_in_subnet($ip, $subnet) {
+	list($subnet, $mask) = explode('/', $subnet);
+	return (ip2long($ip) & ~((1 << (32 - $mask)) - 1)) === ip2long($subnet);
+}
+
+$allowed_subnets = explode(",", setting('kiosk_allowed_subnets'));
+$client_ip = $_SERVER['REMOTE_ADDR'];
+
+$allowed = false;
+foreach ($allowed_subnets as $subnet) {
+	if (ip_in_subnet($client_ip, $subnet)) {
+		$allowed = true;
+		break;
+	}
+}
+
+if (!$allowed) {
+	http_response_code(403);
+	exit('Access denied.');
+}
 ?>
 
 <!doctype html>
