@@ -28,10 +28,10 @@ class Logs {
 	}
 	
 	public function get() {
-		global $db, $settings;
+		global $db;
 	
 		// Get the maximum log age from settings
-		$maximumLogsAge = date('Y-m-d', strtotime('-' . $settings->value('logs_retention') . ' days'));
+		$maximumLogsDisplay = date('Y-m-d', strtotime('-' . setting('logs_display') . ' days'));
 	
 		// Prepare the SQL query
 		$sql  = "SELECT uid, INET_NTOA(ip) AS ip, username, date, result, category, description  
@@ -40,9 +40,21 @@ class Logs {
 				 ORDER BY date DESC";
 		
 		// Execute the query with the bound parameter
-		$results = $db->query($sql, ['maximumLogsAge' => $maximumLogsAge]);
+		$results = $db->query($sql, ['maximumLogsAge' => $maximumLogsDisplay]);
 		
 		return $results;
+	}
+	
+	public function purge() {
+		global $db;
+		
+		$maximumLogsAge = setting('logs_retention');
+	
+		// SQL to delete logs older than logs_retention days
+		$sql = "DELETE FROM " . self::$table_name . " 
+				WHERE date < DATE_SUB(NOW(), INTERVAL " . $maximumLogsAge . " DAY)";
+	
+		return $db->query($sql);
 	}
 	
 	public function table($logs = null) {

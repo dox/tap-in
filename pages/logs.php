@@ -1,4 +1,7 @@
 <?php
+//clear out old logs
+$log->purge();
+
 $logsAll = $log->get(); // Assuming $logsClass is your Logs object
 ?>
 
