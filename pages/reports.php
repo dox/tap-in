@@ -1,56 +1,85 @@
 <h1><?php echo icon('cloud-download', '1em'); ?> Reports</h1>
 
 <?php
-$thisMonthStart = date('Y-m-01', strtotime('first day of this month'));
-$thisMonthEnd = date('Y-m-t', strtotime('last day of this month'));
-$lastMonthStart = date('Y-m-01', strtotime('first day of last month'));
-$lastMonthEnd = date('Y-m-t', strtotime('last day of last month'));
+// Generate the months array (current + previous 12 months)
+$months = [];
+for ($i = 0; $i <= 12; $i++) {
+	$start = new DateTime("first day of -$i month");
+	$end = new DateTime("last day of -$i month");
 
-$reports = [
-	[
-		"title" => "Shifts",
-		"text" => "An export of all shifts",
-		"items" => [
-			["href" => "export.php?page=shifts&from={$thisMonthStart}&to={$thisMonthEnd}", "text" => "This Month (" . date('F', strtotime('first day of this month')) . ")"],
-			["href" => "export.php?page=shifts&from={$lastMonthStart}&to={$lastMonthEnd}", "text" => "Last Month (" . date('F', strtotime('first day of last month')) . ")"],
-			["href" => "export.php?page=shifts", "text" => "All Shifts"]
-		],
-		"last_run" => "debug"
-	],
-	[
-		"title" => "Staff",
-		"text" => "An export of all staff",
-		"items" => [
-			["href" => "export.php?page=staff&status=enabled", "text" => "All Staff (Enabled)"],
-			["href" => "export.php?page=staff", "text" => "All Staff"]
-		],
-		"last_run" => "debug"
-	]
-];
+	$label = $start->format('F Y'); // e.g., "April 2025"
+	$value = $start->format('Y-m-d') . '|' . $end->format('Y-m-d'); // send both start and end
+
+	$months[] = [
+		'label' => $label,
+		'value' => $value
+	];
+}
 ?>
 <div class="row row-cols-1 row-cols-md-3 g-4">
-  <?php
-  foreach ($reports as $card) {
-	  echo '<div class="col">
-		  <div class="card">
-			  <div class="card-body">
-				  <h5 class="card-title">' . htmlspecialchars($card["title"]) . '</h5>
-				  <p class="card-text">' . htmlspecialchars($card["text"]) . '</p>
-			  </div>
-			  <ul class="list-group list-group-flush">';
-	  
-	  foreach ($card["items"] as $item) {
-		  echo '<li class="list-group-item"><a href="' . htmlspecialchars($item["href"]) . '">' . htmlspecialchars($item["text"]) . '</a></li>';
-	  }
-  
-	  echo '</ul>
-			  <div class="card-body">';
-	  
-	  echo '<div class="card-link">' . htmlspecialchars($card["last_run"]) . '</div>';
-  
-	  echo '</div>
-		  </div>
-	  </div>';
-  }
-  ?>
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Totals</h5>
+				<p class="card-text">An export of staff and their total worked hours</p>
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">
+					<form action="export.php?page=totals" method="post">
+						<div class="input-group">
+							<select class="form-select" aria-label="Default select example" name="date_range" id="date_range">
+								<option selected>Select month...</option>
+								<?php foreach ($months as $month): ?>
+									<option value="<?= htmlspecialchars($month['value']) ?>">
+									<?= htmlspecialchars($month['label']) ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+							<button class="btn btn-outline-secondary" type="submit">Go</button>
+						</div>
+					</form>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Staff</h5>
+				<p class="card-text">An export of all staff</p>
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">
+					<form action="export.php?page=staff" method="post">
+						<button class="btn w-100 btn-outline-secondary" type="submit">Go</button>
+					</form>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Shifts</h5>
+				<p class="card-text">An export of all shifts</p>
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">
+					<form action="export.php?page=shifts" method="post">
+						<div class="input-group">
+							<select class="form-select" aria-label="Default select example" name="date_range" id="date_range">
+								<option selected>Select month...</option>
+								<?php foreach ($months as $month): ?>
+									<option value="<?= htmlspecialchars($month['value']) ?>">
+									<?= htmlspecialchars($month['label']) ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+							<button class="btn btn-outline-secondary" type="submit">Go</button>
+						</div>
+					</form>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>

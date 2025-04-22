@@ -1,6 +1,4 @@
-
 <?php
-
 $logsAll = $log->get(); // Assuming $logsClass is your Logs object
 ?>
 

@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="row align-items-start">
 		<div class="col-md-8">
-			Total Worked Hours
+			<h2>Total Worked Hours</h2>
 			<div id="chart">
 			</div>
 		</div>
@@ -11,7 +11,7 @@
 			$openShifts = $db->get($sql);
 			
 			if (count($openShifts) > 0) {
-				echo "<h1>Currently Open Shifts</h1>";
+				echo "<h2>Currently Open Shifts</h2>";
 				
 				$output  = "<ol class=\"list-group list-group mb-3\">";
 				foreach ($openShifts AS $shift) {
@@ -44,7 +44,7 @@
 			
 			
 			?>
-			<h1>Recent Shifts</h1>
+			<h2>Recent Shifts</h2>
 			
 			<ol class="list-group list-group">
 			<?php

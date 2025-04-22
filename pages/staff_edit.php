@@ -88,7 +88,7 @@ if ($uid) {
 		<?php if ($uid): ?>
 		<div class="col-md-4">
 			<div id="chart"></div>
-			Recent Shifts
+			<h2>Recent Shifts</h2>
 			<ol class="list-group">
 				<?php
 				foreach ($staff->recentShifts() as $shiftData) {

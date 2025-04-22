@@ -10,8 +10,14 @@ if ($user->isLoggedIn()) {
 
 $pagePath = __DIR__ . "/pages/export_{$requestedPage}.php";
 
+$fileName = $requestedPage;
+if (!empty(($_POST['date_range']))) {
+	list($from, $to) = explode('|', $_POST['date_range']);
+	$fileName = $fileName . "_" . $from . "_to_" . $to;
+}
+
 header('Content-Type: text/csv');
-header('Content-Disposition: attachment; filename="export.csv"');
+header('Content-Disposition: attachment; filename="' . $fileName . '.csv"');
 
 // Open output stream
 $output = fopen('php://output', 'w');

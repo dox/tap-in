@@ -19,9 +19,8 @@ fputcsv($output, $columns);
 $params = [];
 $where = '';
 
-if (!empty($_GET['from']) && !empty($_GET['to'])) {
-	$from = $_GET['from'];
-	$to = $_GET['to'];
+if (!empty(($_POST['date_range']))) {
+	list($from, $to) = explode('|', $_POST['date_range']);
 
 	// Basic date format check (YYYY-MM-DD)
 	if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $from) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
