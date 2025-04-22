@@ -23,9 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		if (empty($_POST['shift_end'])) {
 			$data['shift_end'] = null;
 		}
-
+		
 		if ($uid) {
 			$dbAttempt = $db->update('shifts', $data, 'uid', $uid);
+		} else {
+			$dbAttempt = $db->create('shifts', $data);
 		}
 
 		if ($dbAttempt) {
@@ -41,6 +43,10 @@ $shiftsAll = $db->get($sql);
 ?>
 
 <h1><?php echo icon('hourglass-split', '1em'); ?> Shifts</h1>
+<div class="pb-3 text-end">
+	<a class="btn btn-success" href="index.php?page=shift_edit" role="button"><?php echo icon('hourglass-split'); ?> Add New</a>
+</div>
+
 <?php
 // Set reference dates in 'Y-m-d' format
 $todayStr = (new DateTime('today'))->format('Y-m-d');
