@@ -41,8 +41,6 @@
 				
 				echo $output;
 			}
-			
-			
 			?>
 			<h2>Recent Shifts</h2>
 			

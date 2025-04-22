@@ -88,6 +88,41 @@ if ($uid) {
 		<?php if ($uid): ?>
 		<div class="col-md-4">
 			<div id="chart"></div>
+			<?php
+			if (count($staff->openShifts()) > 0) {
+				echo "<h2>Currently Open Shifts</h2>";
+				
+				$output  = "<ol class=\"list-group list-group mb-3\">";
+				foreach ($staff->openShifts() AS $shift) {
+					$shift = new Shift($shift['uid']);
+					$staff = new Staff($shift->staff_uid);
+					$staffEditURL = "index.php?page=staff_edit&uid=" . $staff->uid;
+					$shiftEditURL = "index.php?page=shift_edit&uid=" . $shift->uid;
+					
+					$icon = is_null($shift->shift_end) ? " " . icon('hourglass-split') : "";
+					
+					if (empty($shift->shift_end)) {
+						$badgeClass = "text-bg-primary";
+					} else {
+						$badgeClass = "text-bg-success";
+					}
+					
+					$output .= "<li class=\"list-group-item d-flex justify-content-between align-items-start\">";
+					$output .= "<div class=\"ms-2 me-auto\">";
+					$output .= "<div class=\"fw-bold\"><a href=\"" . $staffEditURL . "\">" . $staff->fullname() . "</a></div>";
+					$output .= $shift->shift_start;
+					$output .= "</div>";
+					$output .= $icon . "<a href=\"" . $shiftEditURL . "\"><span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($shift->totalMinutes()) . "</a></span>";
+					$output .= "</li>";
+				}
+				
+				$output .= "</ol>";
+				
+				echo $output;
+			}
+			
+			
+			?>
 			<h2>Recent Shifts</h2>
 			<ol class="list-group">
 				<?php

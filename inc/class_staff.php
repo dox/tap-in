@@ -127,13 +127,22 @@ class Staff {
 		
 		$limit = setting('staff_previous_shifts_display');
 		
-		$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $this->uid . "' ORDER BY uid DESC LIMIT " . $limit;
+		$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $this->uid . "' AND shift_end IS NOT NULL ORDER BY uid DESC LIMIT " . $limit;
 		
 		$shifts = $db->get($sql);
 		
 		return $shifts;
 	}
 	
+	public function openShifts() {
+		global $db;
+		
+		$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $this->uid . "' AND shift_end IS NULL ORDER BY shift_start";
+		
+		$shifts = $db->get($sql);
+		
+		return $shifts;
+	}
 	
 	public function totalMinutes() {
 		return $this->totalMinutesBetweenDates();
