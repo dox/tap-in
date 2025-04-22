@@ -55,7 +55,7 @@ class Database {
 			$stmt->bindValue(":$key", $value);
 			
 			$formattedValue = is_scalar($value) ? (string)$value : json_encode($value);
-			$updates[] = "$column = $formattedValue";
+			$updates[] = "$key = $formattedValue";
 		}
 		
 		// Execute the query

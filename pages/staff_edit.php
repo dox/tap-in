@@ -15,7 +15,7 @@ if ($uid) {
 	<?php if ($uid): ?>
 		<kbd><?= $staff->code ?></kbd> <?= $staff->fullname(); ?>
 	<?php else: ?>
-		New Staff Member
+		Create New Staff Member
 	<?php endif; ?>
 </h1>
 

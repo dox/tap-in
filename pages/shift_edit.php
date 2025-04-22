@@ -20,7 +20,7 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 
 <h1>
 	<?php echo icon('hourglass-split', '1em'); ?>
-	<?php echo $isEditing ? "Shift Edit for " . $staff->fullname() : "Create New Shift"; ?>
+	<?php echo $isEditing ? "Edit Shift for " . $staff->fullname() . " (#" . $shift->uid . ")" : "Create New Shift"; ?>
 </h1>
 
 <form method="POST" action="index.php?page=shifts">
