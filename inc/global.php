@@ -84,16 +84,19 @@ function convertMinutesToHours($minutes) {
 }
 
 function dateDisplay($date = null, $longFormat = false) {
-
-	if ($longFormat == true) {
-		$dateFormat = setting('datetime_format_long');
+	if (isset($date)) {
+		if ($longFormat == true) {
+			$dateFormat = setting('datetime_format_long');
+		} else {
+			$dateFormat = setting('datetime_format_short');
+		}
+		
+		$returnDate = date($dateFormat, strtotime($date));
+		
+		return $returnDate;
 	} else {
-		$dateFormat = setting('datetime_format_short');
+		return false;
 	}
-
-	$returnDate = date($dateFormat, strtotime($date));
-
-	return $returnDate;
 }
 
 ?>
