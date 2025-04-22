@@ -6,7 +6,9 @@ $columns = [
 	'staff_code',
 	'staff_payroll_id',
 	'total_minutes',
-	'total_hours'
+	'total_hours',
+	'total_minutes_rounded_up',
+	'total_hours_rounded_up'
 ];
 
 // Output header row
@@ -41,6 +43,8 @@ foreach ($staffAll as $staff) {
 		$row[] = $staff->payroll_id;
 		$row[] = $totalMinutes;
 		$row[] = convertMinutesToHours($totalMinutes);
+		$row[] = ceil($totalMinutes / 15) * 15;
+		$row[] = convertMinutesToHours(ceil($totalMinutes / 15) * 15);
 		
 		fputcsv($output, $row);
 	}
