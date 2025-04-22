@@ -163,6 +163,46 @@ class Database {
 	
 		return $result;
 	}
+	
+	public function delete($table, $whereColumn, $whereValue) {
+		global $log;
+	
+		// Build the SQL DELETE statement
+		$sql = "DELETE FROM $table WHERE $whereColumn = :value";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->bindValue(':value', $whereValue);
+	
+		// Execute the query
+		$result = $stmt->execute();
+	
+		// Log the result
+		if ($result == 1) {
+			$log->create([
+				'category'    => $table,
+				'result'      => 'warning',
+				'description' => sprintf(
+					'Deleted from table %s where %s = %s',
+					$table,
+					$whereColumn,
+					$whereValue
+				),
+			]);
+		} else {
+			$log->create([
+				'category'    => $table,
+				'result'      => 'danger',
+				'description' => sprintf(
+					'Failed to delete from table %s where %s = %s',
+					$table,
+					$whereColumn,
+					$whereValue
+				),
+			]);
+		}
+	
+		return $result;
+	}
+
 }
 
 // Usage

@@ -41,7 +41,7 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 	</div>
 	
 	<button type="submit" class="btn btn-primary">Submit</button>
-	<button type="submit" class="btn btn-danger" disabled>Delete</button>
+	<button type="submit" name="delete" value="1" class="btn btn-danger" onclick="return confirmDelete();">Delete</button>
 	<input type="hidden" name="uid" value="<?php echo $shift->uid; ?>" />
 </form>
 
@@ -76,4 +76,8 @@ const shift_EndPicker = flatpickr("#shift_end", {
 document.getElementById("clearEndDate").addEventListener("click", function () {
 	shift_EndPicker.clear();
 });
+
+function confirmDelete() {
+	return confirm("Are you absolutely sure you want to delete this staff member?");
+}
 </script>

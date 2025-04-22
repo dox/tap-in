@@ -2,30 +2,41 @@
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$uid = $_POST['uid'] ?? null;
-	$data = [
-		'firstname' => $_POST['firstname'],
-		'lastname'  => $_POST['lastname'],
-		'code'      => $_POST['code'],
-		'category'  => $_POST['category'],
-		'email'     => $_POST['email'],
-		'payroll_id'=> $_POST['payroll_id'],
-		'enabled'   => isset($_POST['enabled']) ? 1 : 0,
-	];
 
-	if ($uid) {
-		$dbAttempt = $db->update('staff', $data, 'uid', $uid);
+	if (isset($_POST['delete']) && $uid) {
+		// Handle delete request
+		$dbAttempt = $db->delete('staff', 'uid', $uid);
+		
+		if ($dbAttempt) {
+			echo alert('success', "Deleted!", "Staff record deleted successfully.");
+		} else {
+			echo alert('danger', "Error!", "Failed to delete staff record.");
+		}
 	} else {
-		$dbAttempt = $db->create('staff', $data);
-	}
-	
-	if ($dbAttempt) {
-		echo alert('success', "Success!", "Staff updated successfully!");
-	} else {
-		echo alert('danger', "Error!", "Failed to update staff.");
+		// Handle create/update
+		$data = [
+			'firstname' => $_POST['firstname'],
+			'lastname'  => $_POST['lastname'],
+			'code'      => $_POST['code'],
+			'category'  => $_POST['category'],
+			'email'     => $_POST['email'],
+			'payroll_id'=> $_POST['payroll_id'],
+			'enabled'   => isset($_POST['enabled']) ? 1 : 0,
+		];
+
+		if ($uid) {
+			$dbAttempt = $db->update('staff', $data, 'uid', $uid);
+		} else {
+			$dbAttempt = $db->create('staff', $data);
+		}
+
+		if ($dbAttempt) {
+			echo alert('success', "Success!", "Staff updated successfully!");
+		} else {
+			echo alert('danger', "Error!", "Failed to update staff.");
+		}
 	}
 }
-
-
 
 $sql = "SELECT * FROM staff ORDER BY enabled DESC, lastname ASC, firstname ASC";
 $staffAll = $db->get($sql);

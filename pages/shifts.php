@@ -1,24 +1,38 @@
 <?php
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	// Gather the POST data into an array
-	$data = [
-		'staff_uid' => $_POST['staff_uid'],
-		'shift_start' => $_POST['shift_start'],
-		'shift_end' => $_POST['shift_end'],
-	];
-	
-	if (empty($_POST['shift_end'])) {
-		$data['shift_end'] = null;
-	}
-	
-	// Update the shift record in the database
-	$updateSuccess = $db->update('shifts', $data, 'uid', $_POST['uid']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	$uid = $_POST['uid'] ?? null;
 
-	if ($updateSuccess) {
-		echo alert('success', "Success!", "Shift updated successfully!");
+	if (isset($_POST['delete']) && $uid) {
+		// Handle delete request
+		$dbAttempt = $db->delete('shifts', 'uid', $uid);
+		
+		if ($dbAttempt) {
+			echo alert('success', "Deleted!", "Shift deleted successfully.");
+		} else {
+			echo alert('danger', "Error!", "Failed to delete shift.");
+		}
 	} else {
-		echo alert('danger', "Error!", "Failed to update shift.");
+		// Handle create/update
+		$data = [
+			'staff_uid' => $_POST['staff_uid'],
+			'shift_start' => $_POST['shift_start'],
+			'shift_end' => $_POST['shift_end']
+		];
+		
+		if (empty($_POST['shift_end'])) {
+			$data['shift_end'] = null;
+		}
+
+		if ($uid) {
+			$dbAttempt = $db->update('shifts', $data, 'uid', $uid);
+		}
+
+		if ($dbAttempt) {
+			echo alert('success', "Success!", "Shift updated successfully!");
+		} else {
+			echo alert('danger', "Error!", "Failed to update shift.");
+		}
 	}
 }
 
