@@ -78,6 +78,6 @@ document.getElementById("clearEndDate").addEventListener("click", function () {
 });
 
 function confirmDelete() {
-	return confirm("Are you absolutely sure you want to delete this staff member?");
+	return confirm("Are you absolutely sure you want to delete this shift?  This action cannot be undone!");
 }
 </script>

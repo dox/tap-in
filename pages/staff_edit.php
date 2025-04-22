@@ -79,8 +79,9 @@ if ($uid) {
 					<label class="form-check-label" for="enabled">Enabled</label>
 				</div>
 				
-				<input type="hidden" name="uid" value="<?= htmlspecialchars($staff->uid ?? '') ?>" />
 				<button type="submit" class="btn btn-primary">Submit</button>
+				<button type="submit" name="delete" value="1" class="btn btn-danger" onclick="return confirmDelete();">Delete</button>
+				<input type="hidden" name="uid" value="<?= htmlspecialchars($staff->uid ?? '') ?>" />
 			</form>
 		</div>
 
@@ -196,4 +197,10 @@ var options = {
 var chart = new ApexCharts(document.querySelector("#chart"), options);
 
 chart.render();
+
+function confirmDelete() {
+	confirm("You are not permitted to delete members of staff.  Please contact the IT Office to perform this action.");
+	
+	return false;
+}
 </script>
