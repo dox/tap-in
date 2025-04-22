@@ -28,7 +28,6 @@ for ($i = 0; $i <= 12; $i++) {
 					<form action="export.php?page=totals" method="post">
 						<div class="input-group">
 							<select class="form-select" aria-label="Default select example" name="date_range" id="date_range">
-								<option selected>Select month...</option>
 								<?php foreach ($months as $month): ?>
 									<option value="<?= htmlspecialchars($month['value']) ?>">
 									<?= htmlspecialchars($month['label']) ?>
@@ -68,7 +67,6 @@ for ($i = 0; $i <= 12; $i++) {
 					<form action="export.php?page=shifts" method="post">
 						<div class="input-group">
 							<select class="form-select" aria-label="Default select example" name="date_range" id="date_range">
-								<option selected>Select month...</option>
 								<?php foreach ($months as $month): ?>
 									<option value="<?= htmlspecialchars($month['value']) ?>">
 									<?= htmlspecialchars($month['label']) ?>

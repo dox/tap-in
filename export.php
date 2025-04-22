@@ -26,5 +26,11 @@ include_once($pagePath);
 
 // Close output stream
 fclose($output);
+
+$log->create([
+	'category'    => 'report',
+	'result'      => 'success',
+	'description' => 'Report generated: ' . $fileName
+]);
 exit;
 ?>
