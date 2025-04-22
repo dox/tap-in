@@ -36,6 +36,8 @@ foreach ($staffAll as $staff) {
 	if ($totalMinutes > 0) {
 		$row = [];
 		
+		$roundUp = setting('shift_roundup');
+		
 		// Assign each value in order
 		$row[] = $staff->uid;
 		$row[] = $staff->fullname();
@@ -43,8 +45,8 @@ foreach ($staffAll as $staff) {
 		$row[] = $staff->payroll_id;
 		$row[] = $totalMinutes;
 		$row[] = convertMinutesToHours($totalMinutes);
-		$row[] = ceil($totalMinutes / 15) * 15;
-		$row[] = convertMinutesToHours(ceil($totalMinutes / 15) * 15);
+		$row[] = ceil($totalMinutes / $roundUp) * $roundUp;
+		$row[] = convertMinutesToHours(ceil($totalMinutes / $roundUp) * $roundUp);
 		
 		fputcsv($output, $row);
 	}
