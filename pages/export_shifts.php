@@ -5,6 +5,7 @@ $columns = [
 	'staff_uid',
 	'staff_name',
 	'staff_code',
+	'staff_payroll_id',
 	'shift_start',
 	'shift_end',
 	'shift_duration_minutes',
@@ -47,6 +48,7 @@ foreach ($shiftsAll as $shift) {
 	$row[] = $staff->uid;
 	$row[] = $staff->fullname();
 	$row[] = $staff->code;
+	$row[] = $staff->payroll_id;
 	$row[] = dateDisplay($shift->shift_start, true);
 	$row[] = dateDisplay($shift->shift_end, true);
 	$row[] = $shift->totalMinutes();

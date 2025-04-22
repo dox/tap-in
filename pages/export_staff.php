@@ -4,6 +4,7 @@ $columns = [
 	'staff_uid',
 	'staff_name',
 	'staff_code',
+	'staff_payroll_id',
 	'total_minutes',
 	'total_hours'
 ];
@@ -39,6 +40,7 @@ foreach ($staffAll as $staff) {
 	$row[] = $staff->uid;
 	$row[] = $staff->fullname();
 	$row[] = $staff->code;
+	$row[] = $staff->payroll_id;
 	$row[] = $staff->totalMinutes();
 	$row[] = convertMinutesToHours($staff->totalMinutes());
 

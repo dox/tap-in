@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'code'      => $_POST['code'],
 		'category'  => $_POST['category'],
 		'email'     => $_POST['email'],
+		'payroll_id'=> $_POST['payroll_id'],
 		'enabled'   => isset($_POST['enabled']) ? 1 : 0,
 	];
 

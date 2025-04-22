@@ -71,6 +71,10 @@ if ($uid) {
 					<input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($staff->email ?? '') ?>">
 				</div>
 				<div class="mb-3">
+					<label for="payroll_id" class="form-label">Payroll ID</label>
+					<input type="text" class="form-control" id="payroll_id" name="payroll_id" value="<?= htmlspecialchars($staff->payroll_id ?? '') ?>">
+				</div>
+				<div class="mb-3">
 					<input class="form-check-input" type="checkbox" value="1" id="enabled" name="enabled" <?= ($staff->enabled ?? '') == "1" ? 'checked' : '' ?>>
 					<label class="form-check-label" for="enabled">Enabled</label>
 				</div>

@@ -9,6 +9,7 @@ class Staff {
 	public $code;
 	public $category;
 	public $email;
+	public $payroll_id;
 	public $last_tapin;
 	
 	public function __construct($lookup = null) {
