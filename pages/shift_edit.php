@@ -23,42 +23,60 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 	<?php echo $isEditing ? "Edit Shift for " . $staff->fullname() . " (#" . $shift->uid . ")" : "Create New Shift"; ?>
 </h1>
 
-<form method="POST" action="index.php?page=shifts">
-	<div class="mb-3">
-		<label for="staff_uid" class="form-label">Staff Member</label>
-		<select id="staff_uid" name="staff_uid" class="form-select">
-			<?php
-			foreach ($staffAll as $staffOption) {
-				$selected = ($staffOption['uid'] == $shift->staff_uid) ? " selected" : "";
-				echo "<option value='" . htmlspecialchars($staffOption['uid']) . "'$selected>" .
-					htmlspecialchars($staffOption['lastname']) . ", " .
-					htmlspecialchars($staffOption['firstname']) .
-					"</option>";
-			}
-			?>
-		</select>
+<div class="row">
+	<div class="col-md-8">
+		<form method="POST" action="index.php?page=shifts">
+			<div class="mb-3">
+				<label for="staff_uid" class="form-label">Staff Member</label>
+				<select id="staff_uid" name="staff_uid" class="form-select">
+					<?php
+					foreach ($staffAll as $staffOption) {
+						$selected = ($staffOption['uid'] == $shift->staff_uid) ? " selected" : "";
+						echo "<option value='" . htmlspecialchars($staffOption['uid']) . "'$selected>" .
+							htmlspecialchars($staffOption['lastname']) . ", " .
+							htmlspecialchars($staffOption['firstname']) .
+							"</option>";
+					}
+					?>
+				</select>
+			</div>
+		
+			<div class="mb-3">
+				<label for="shift_start" class="form-label">Shift Start Time</label>
+				<input type="text" class="form-control" id="shift_start" name="shift_start" value="<?php echo htmlspecialchars($shift->shift_start); ?>">
+			</div>
+		
+			<div class="mb-3">
+				<label for="shift_end" class="form-label">Shift End Time</label>
+				<div class="input-group">
+					<input type="text" class="form-control" id="shift_end" name="shift_end" value="<?php echo htmlspecialchars($shift->shift_end); ?>">
+					<button class="btn btn-outline-secondary" type="button" id="clearEndDate">Clear</button>
+				</div>
+			</div>
+		
+			<button type="submit" class="btn btn-primary"><?php echo $isEditing ? "Update" : "Create"; ?></button>
+		
+			<?php if ($isEditing): ?>
+				<button type="submit" name="delete" value="1" class="btn btn-danger" onclick="return confirmDelete();">Delete</button>
+				<input type="hidden" name="uid" value="<?php echo $shift->uid; ?>" />
+			<?php endif; ?>
+		</form>
 	</div>
-
-	<div class="mb-3">
-		<label for="shift_start" class="form-label">Shift Start Time</label>
-		<input type="text" class="form-control" id="shift_start" name="shift_start" value="<?php echo htmlspecialchars($shift->shift_start); ?>">
-	</div>
-
-	<div class="mb-3">
-		<label for="shift_end" class="form-label">Shift End Time</label>
-		<div class="input-group">
-			<input type="text" class="form-control" id="shift_end" name="shift_end" value="<?php echo htmlspecialchars($shift->shift_end); ?>">
-			<button class="btn btn-outline-secondary" type="button" id="clearEndDate">Clear</button>
+	<div class="col-md-4">
+		<div class="card mb-3">
+			<div class="card-body">
+				<div class="subheader text-nowrap text-truncate">Total Shift Duration</div>
+				<div class="h1 text-truncate"><?php echo convertMinutesToHours($shift->totalMinutes()); ?></div>
+			</div>
+		</div>
+		<div class="card mb-3">
+			<div class="card-body">
+				<div class="subheader text-nowrap text-truncate">Rounded Up Duration <i>(Nearest <?php echo $roundUp = setting('shift_roundup'); ?> minutes)</i></div>
+				<div class="h1 text-truncate"><?php echo convertMinutesToHours($shift->totalMinutesRoundedUp()); ?></div>
+			</div>
 		</div>
 	</div>
-
-	<button type="submit" class="btn btn-primary"><?php echo $isEditing ? "Update" : "Create"; ?></button>
-
-	<?php if ($isEditing): ?>
-		<button type="submit" name="delete" value="1" class="btn btn-danger" onclick="return confirmDelete();">Delete</button>
-		<input type="hidden" name="uid" value="<?php echo $shift->uid; ?>" />
-	<?php endif; ?>
-</form>
+</div>
 
 <script>
 const minEndDate = "<?php echo $shift->shift_start; ?>";

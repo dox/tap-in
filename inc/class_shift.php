@@ -49,5 +49,10 @@ class Shift {
 	public function totalMinutes() {
 		return shiftDurationMinutes($this->shift_start, $this->shift_end);
 	}
-
+	
+	public function totalMinutesRoundedUp() {
+		$roundUp = setting('shift_roundup');
+		
+		return ceil($this->totalMinutes() / $roundUp) * $roundUp;
+	}
 }

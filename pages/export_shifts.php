@@ -37,8 +37,6 @@ $sql = "SELECT * FROM shifts $where ORDER BY uid DESC";
 // Now use parameter binding — assuming $db->query($sql, $params)
 $shiftsAll = $db->query($sql, $params);
 
-$roundUp = setting('shift_roundup');
-
 // Output data rows
 foreach ($shiftsAll as $shift) {
 	$shift = new Shift($shift['uid']);
@@ -56,8 +54,8 @@ foreach ($shiftsAll as $shift) {
 	$row[] = dateDisplay($shift->shift_end, true);
 	$row[] = $shift->totalMinutes();
 	$row[] = convertMinutesToHours($shift->totalMinutes());
-	$row[] = ceil($shift->totalMinutes() / $roundUp) * $roundUp;
-	$row[] = convertMinutesToHours(ceil($shift->totalMinutes() / $roundUp) * $roundUp);
+	$row[] = $shift->totalMinutesRoundedUp();
+	$row[] = convertMinutesToHours($shift->totalMinutesRoundedUp());
 
 	fputcsv($output, $row);
 }
