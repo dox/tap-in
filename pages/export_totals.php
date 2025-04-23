@@ -18,12 +18,13 @@ fputcsv($output, $columns);
 $sql = "SELECT * FROM staff ORDER BY lastname ASC, firstname ASC";
 $staffAll = $db->query($sql);
 
+$roundUp = setting('shift_roundup');
+
 // Output data rows
 foreach ($staffAll as $staff) {
 	$staff = new Staff($staff['uid']);
 	$totalMinutes = 0;
 	
-	$roundUp = setting('shift_roundup');
 	$totalMinutes = 0;
 	$totalMinutesRounded = 0;
 	

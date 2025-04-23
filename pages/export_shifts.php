@@ -8,8 +8,10 @@ $columns = [
 	'staff_payroll_id',
 	'shift_start',
 	'shift_end',
-	'shift_duration_minutes',
-	'shift_duration_hours'
+	'shift_total_minutes',
+	'shift_total_hours',
+	'shift_total_minutes_rounded_up',
+	'shift_total_hours_rounded_up'
 ];
 
 // Output header row
@@ -35,6 +37,8 @@ $sql = "SELECT * FROM shifts $where ORDER BY uid DESC";
 // Now use parameter binding — assuming $db->query($sql, $params)
 $shiftsAll = $db->query($sql, $params);
 
+$roundUp = setting('shift_roundup');
+
 // Output data rows
 foreach ($shiftsAll as $shift) {
 	$shift = new Shift($shift['uid']);
@@ -52,6 +56,8 @@ foreach ($shiftsAll as $shift) {
 	$row[] = dateDisplay($shift->shift_end, true);
 	$row[] = $shift->totalMinutes();
 	$row[] = convertMinutesToHours($shift->totalMinutes());
+	$row[] = ceil($shift->totalMinutes() / $roundUp) * $roundUp;
+	$row[] = convertMinutesToHours(ceil($shift->totalMinutes() / $roundUp) * $roundUp);
 
 	fputcsv($output, $row);
 }
