@@ -23,20 +23,29 @@ foreach ($staffAll as $staff) {
 	$staff = new Staff($staff['uid']);
 	$totalMinutes = 0;
 	
+	$roundUp = setting('shift_roundup');
+	$totalMinutes = 0;
+	$totalMinutesRounded = 0;
+	
 	// Get shifts
 	if (!empty(($_POST['date_range']))) {
 		list($from, $to) = explode('|', $_POST['date_range']);
 		
 		// Basic date format check (YYYY-MM-DD)
 		if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $from) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
-			$totalMinutes = $staff->totalMinutesBetweenDates($from, $to);
+			$shifts = $staff->shiftsBetweenDates($from, $to);
+		}
+		
+		foreach ($shifts AS $shift) {
+			$shift = new Shift($shift['uid']);
+			
+			$totalMinutes += $shift->totalMinutes();
+			$totalMinutesRounded += ceil($shift->totalMinutes() / $roundUp) * $roundUp;
 		}
 	}
 	
 	if ($totalMinutes > 0) {
 		$row = [];
-		
-		$roundUp = setting('shift_roundup');
 		
 		// Assign each value in order
 		$row[] = $staff->uid;
@@ -45,8 +54,8 @@ foreach ($staffAll as $staff) {
 		$row[] = $staff->payroll_id;
 		$row[] = $totalMinutes;
 		$row[] = convertMinutesToHours($totalMinutes);
-		$row[] = ceil($totalMinutes / $roundUp) * $roundUp;
-		$row[] = convertMinutesToHours(ceil($totalMinutes / $roundUp) * $roundUp);
+		$row[] = $totalMinutesRounded;
+		$row[] = convertMinutesToHours($totalMinutesRounded);
 		
 		fputcsv($output, $row);
 	}

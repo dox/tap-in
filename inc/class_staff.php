@@ -144,6 +144,27 @@ class Staff {
 		return $shifts;
 	}
 	
+	public function shiftsBetweenDates($from = null, $to = null) {
+		global $db;
+		
+		// Start building the SQL query
+		$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $this->uid . "'";
+		
+		// Add date range conditions if provided
+		if ($from) {
+			$sql .= " AND shift_start >= '" . $from . "'";
+		}
+		
+		if ($to) {
+			$sql .= " AND shift_start <= '" . $to . "'";
+		}
+		
+		// Execute the query
+		$results = $db->get($sql);
+		
+		return $results;
+	}
+	
 	public function totalMinutes() {
 		return $this->totalMinutesBetweenDates();
 	}
