@@ -5,6 +5,7 @@ $columns = [
 	'staff_name',
 	'staff_code',
 	'staff_payroll_id',
+	'total_shifts',
 	'total_minutes',
 	'total_hours',
 	'total_minutes_rounded_up',
@@ -51,6 +52,7 @@ foreach ($staffAll as $staff) {
 		$row[] = $staff->fullname();
 		$row[] = $staff->code;
 		$row[] = $staff->payroll_id;
+		$row[] = count($shifts);
 		$row[] = $totalMinutes;
 		$row[] = convertMinutesToHours($totalMinutes);
 		$row[] = $totalMinutesRounded;
