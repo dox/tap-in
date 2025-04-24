@@ -26,71 +26,71 @@ echo alert('danger', "Warning!", "Making changes to these settings can disrupt t
 ?>
 
 <div class="accordion" id="accordionExample">
-  <?php
-  foreach ($settingsAll as $setting) {
-	  // Determine the show states based on the 'settingUID' parameter
-	  $isActive = isset($_GET['settingUID']) && $_GET['settingUID'] == $setting['uid'];
-	  $headingShow = $isActive ? "accordion-button show" : "accordion-button collapsed";
-	  $settingShow = $isActive ? "accordion-collapse show" : "accordion-collapse collapse";
-  
-	  // Generate item name and the start of the output string
-	  $itemName = "collapse-" . $setting['uid'];
-	  $output = "<div class=\"accordion-item\">
-				  <h2 class=\"accordion-header\" id=\"{$setting['uid']}\">
-					  <button class=\"{$headingShow}\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#{$itemName}\" aria-expanded=\"true\" aria-controls=\"{$itemName}\">
-						  <strong>{$setting['name']}</strong>: {$setting['description']} <span class=\"badge bg-secondary\">{$setting['type']}</span>
-					  </button>
-				  </h2>
-				  <div id=\"{$itemName}\" class=\"{$settingShow}\" aria-labelledby=\"{$setting['uid']}\" data-bs-parent=\"#accordionExample\">
-					  <div class=\"accordion-body\">
-						  <form method=\"post\" id=\"form-{$setting['uid']}\" action=\"{$_SERVER['REQUEST_URI']}\">";
-  
-	  // Handle different setting types
-	  switch ($setting['type']) {
-		  case 'numeric':
-			  $output .= "<div class=\"input-group\">
-							  <input type=\"number\" class=\"form-control\" id=\"value\" name=\"value\" value=\"{$setting['value']}\">
-							  <button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>
-						  </div>";
-			  break;
-  
-		  case 'boolean':
-			  $checked = ($setting['value'] == "true") ? "checked" : "";
-			  $output .= "<div class=\"form-check\">
-							  <input type=\"hidden\" id=\"value\" name=\"value\" value=\"false\">
-							  <input type=\"checkbox\" class=\"form-check-input\" id=\"value\" name=\"value\" value=\"true\" {$checked}>
-							  <button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>
-						  </div>";
-			  break;
-  
-		  case 'json':
-			  $output .= "<textarea rows=\"10\" class=\"form-control\" id=\"value\" name=\"value\">" . json_encode(json_decode($setting['value']), JSON_PRETTY_PRINT) . "</textarea>
-						  <button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>";
-			  break;
-  
-		  case 'hidden':
-			  $output .= "Setting cannot be changed here";
-			  break;
-  
-		  default:
-			  $output .= "<div class=\"input-group\">
-							  <input type=\"text\" class=\"form-control\" id=\"value\" name=\"value\" value=\"{$setting['value']}\">
-							  <button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>
-						  </div>";
-			  break;
-	  }
-  
-	  // Add the hidden UID field and close the form
-	  $output .= "<input type=\"hidden\" id=\"uid\" name=\"uid\" value=\"{$setting['uid']}\">
-				  </form>
-			  </div>
-		  </div>
-	  </div>";
-  
-	  // Output the result
-	  echo $output;
-  }
-  ?>
+	<?php
+	foreach ($settingsAll as $setting) {
+		// Determine the show states based on the 'settingUID' parameter
+		$isActive = isset($_GET['settingUID']) && $_GET['settingUID'] == $setting['uid'];
+		$headingShow = $isActive ? "accordion-button" : "accordion-button collapsed";
+		$settingShow = $isActive ? "accordion-collapse show" : "accordion-collapse collapse";
+		
+		// Generate item name and the start of the output string
+		$itemName = "collapse-" . $setting['uid'];
+		
+		// Handle different setting types
+		switch ($setting['type']) {
+			case 'numeric':
+				$settingForm = "<div class=\"input-group\">
+				<input type=\"number\" class=\"form-control\" id=\"value\" name=\"value\" value=\"{$setting['value']}\">
+				<button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>
+				</div>";
+			break;
+			
+			case 'boolean':
+				$checked = ($setting['value'] == "true") ? "checked" : "";
+				
+				$settingForm = "<div class=\"form-check\">
+				<input type=\"hidden\" id=\"value\" name=\"value\" value=\"false\">
+				<input type=\"checkbox\" class=\"form-check-input\" id=\"value\" name=\"value\" value=\"true\" {$checked}>
+				<button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>
+				</div>";
+			break;
+			
+			case 'json':
+				$settingForm = "<textarea rows=\"10\" class=\"form-control\" id=\"value\" name=\"value\">" . json_encode(json_decode($setting['value']), JSON_PRETTY_PRINT) . "</textarea>
+				<button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>";
+			break;
+			
+			case 'hidden':
+				$settingForm = "Setting cannot be changed here";
+			break;
+			
+			default:
+				$settingForm = "<div class=\"input-group\">
+				<input type=\"text\" class=\"form-control\" id=\"value\" name=\"value\" value=\"{$setting['value']}\">
+				<button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>
+				</div>";
+			break;
+		}
+		
+		$output  = "<div class=\"accordion-item\">";
+		$output .= "<h2 class=\"accordion-header\">" ;
+		$output .= "<button class=\"" . $headingShow . "\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#" . $itemName . "\" aria-expanded=\"true\" aria-controls=\"" . $itemName . "\"><strong>" . $setting['name'] . "</strong></button>";
+		$output .= "</h2>";
+		
+		$output .= "<div id=\"" . $itemName . "\" class=\"" . $settingShow . "\" data-bs-parent=\"#accordionExample\">";
+		$output .= "<div class=\"accordion-body\">";
+		$output .= "<form method=\"post\" id=\"form-" . $setting['uid'] . "\" action=\"" . $_SERVER['REQUEST_URI'] . "\">";
+		$output .= $settingForm;
+		$output .= "<div id=\"" . $itemName . "Help\" class=\"form-text\">" . $setting['description'] . "</div>";
+		$output .= "<input type=\"hidden\" id=\"uid\" name=\"uid\" value=\"" . $setting['uid'] . "\">";
+		$output .= "</form>";
+		$output .= "</div>";
+		$output .= "</div>";
+		$output .= "</div>";
+		
+		echo $output;
+	}
+	?>
 </div>
 
 <h2 class="m-3">Icons Available in <code>/icons/</code></h2>

@@ -65,6 +65,7 @@ if ($uid) {
 						}
 						?>
 					</select>
+					<div id="categoryHelp" class="form-text">Add more <a href="index.php?page=settings&settingUID=20">categories here</a></div>
 				</div>
 				<div class="mb-3">
 					<label for="email" class="form-label">Email Address</label>
