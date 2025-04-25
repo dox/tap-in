@@ -29,8 +29,8 @@ requireLogin(); // Redirects if not logged in
 		include_once($pagePath);
 		?>
 		
-		<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-			<span class="text-muted">© 2025 <a href="https://github.com/dox/tap-in" class="link-secondary">github/dox/tap-in</a>.  All rights reserved.</span>
+		<footer class="py-3 my-4 border-top">
+			<span class="text-muted">© 2025 <a href="https://github.com/dox/tap-in" class="link-secondary">github/dox/tap-in</a></span>
 		</footer>
 	</div>
 	

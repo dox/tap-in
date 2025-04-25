@@ -22,12 +22,12 @@ require_once 'inc/autoload.php';
 				}
 				?>
 				
-				<form method="post">
+				<form method="post" class="form-signin">
 					<?php echo icon('stopwatch', '5em'); ?>
 					  <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 				  
 					  <div class="form-floating">
-						<input type="username" class="form-control" id="username" name="username" required>
+						<input type="text" class="form-control" id="username" name="username" required>
 						<label for="username">Username</label>
 					  </div>
 					  <div class="form-floating">
@@ -45,7 +45,10 @@ require_once 'inc/autoload.php';
 					  <button class="btn btn-primary w-100 py-2 my-3" type="submit">Sign in</button>
 					  <a href="kiosk.php" class="btn btn-success w-50 py-2 my-3" type="submit">Kiosk</a>
 					  
-					  <p class="mt-5 mb-3 text-body-secondary">© 2025</p>
+					  <footer class="text-center py-3 my-4 border-top">
+						  <span class="text-muted">© 2025 <a href="https://github.com/dox/tap-in" class="link-secondary">github/dox/tap-in</a></span>
+					  </footer>
+					  
 					</form>
 			</div>
 		</div>
