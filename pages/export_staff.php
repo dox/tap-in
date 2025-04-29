@@ -3,6 +3,7 @@
 $columns = [
 	'staff_uid',
 	'staff_name',
+	'staff_email',
 	'staff_code',
 	'staff_payroll_id',
 	'total_minutes',
@@ -39,6 +40,7 @@ foreach ($staffAll as $staff) {
 	// Assign each value in order
 	$row[] = $staff->uid;
 	$row[] = $staff->fullname();
+	$row[] = $staff->email;
 	$row[] = $staff->code;
 	$row[] = $staff->payroll_id;
 	$row[] = $staff->totalMinutes();
