@@ -55,6 +55,12 @@ foreach ($staffAll as $staff) {
 		$headers .= 'X-Mailer: PHP/' . phpversion();
 		
 		mail($to, $subject, $message, $headers);
+		
+		$log->create([
+			'category'    => 'email',
+			'result'      => 'success',
+			'description' => 'Email sent to ' . $staff->email
+		]);
 	}
 }
 ?>
