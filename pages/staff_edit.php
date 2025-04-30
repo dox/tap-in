@@ -96,56 +96,26 @@ if ($uid) {
 				$output  = "<ol class=\"list-group list-group mb-3\">";
 				foreach ($staff->openShifts() AS $shift) {
 					$shift = new Shift($shift['uid']);
-					$staff = new Staff($shift->staff_uid);
-					$staffEditURL = "index.php?page=staff_edit&uid=" . $staff->uid;
-					$shiftEditURL = "index.php?page=shift_edit&uid=" . $shift->uid;
-					
-					$icon = is_null($shift->shift_end) ? " " . icon('hourglass-split') : "";
-					
-					if (empty($shift->shift_end)) {
-						$badgeClass = "text-bg-primary";
-					} else {
-						$badgeClass = "text-bg-success";
-					}
-					
-					$output .= "<li class=\"list-group-item d-flex justify-content-between align-items-start\">";
-					$output .= "<div class=\"ms-2 me-auto\">";
-					$output .= "<div class=\"fw-bold\"><a href=\"" . $staffEditURL . "\">" . $staff->fullname() . "</a></div>";
-					$output .= $shift->shift_start;
-					$output .= "</div>";
-					$output .= $icon . "<a href=\"" . $shiftEditURL . "\"><span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($shift->totalMinutes()) . "</a></span>";
-					$output .= "</li>";
+					$output .= $shift->listGroupItem();
 				}
-				
 				$output .= "</ol>";
 				
 				echo $output;
 			}
-			
-			
 			?>
-			<h2>Recent Shifts</h2>
-			<ol class="list-group">
-				<?php
-				foreach ($staff->recentShifts() as $shiftData) {
-					$shift = new Shift($shiftData['uid']);
-					$url = "index.php?page=shift_edit&uid=" . $shift->uid;
-					$badgeClass = empty($shift->shift_end) ? "text-bg-primary" : "text-bg-success";
-					$hours = convertMinutesToHours($shift->totalMinutes());
-					$icon = is_null($shift->shift_end) ? " " . icon('hourglass-split') : "";
-					
-					$output  = "<li class=\"list-group-item d-flex justify-content-between align-items-start\">";
-					$output .= "<div class=\"ms-2 me-auto\">";
-					$output .= "<div class=\"fw-bold\">" . $staff->fullname() . "</div>";
-					$output .= dateDisplay($shift->shift_start, true);
-					$output .= "</div>";
-					$output .= $icon . "<a href=\"" . $url . "\"><span class=\"badge " . $badgeClass . " . rounded-pill\">" . $hours . "</span></a>";
-					$output .= "</li>";
-					
-					echo $output;
-				}
-				?>
-			</ol>
+			
+			<?php
+			echo "<h2>Recent Shifts</h2>";
+			
+			$output  = "<ol class=\"list-group list-group mb-3\">";
+			foreach ($staff->recentShifts() AS $shift) {
+				$shift = new Shift($shift['uid']);
+				$output .= $shift->listGroupItem();
+			}
+			$output .= "</ol>";
+			
+			echo $output;
+			?>
 		</div>
 		<?php endif; ?>
 	</div>

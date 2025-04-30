@@ -46,6 +46,41 @@ class Shift {
 			. '</tr>';
 	}
 	
+	public function listGroupItem() {
+		$staff = new Staff($this->staff_uid);
+		$staffEditURL = "index.php?page=staff_edit&uid=" . $staff->uid;
+		
+		$output  = "<li class=\"list-group-item d-flex justify-content-between align-items-start\">";
+		$output .= "<div class=\"ms-2 me-auto\">";
+		$output .= "<div class=\"fw-bold\"><a href=\"" . $staffEditURL . "\">" . $staff->fullname() . "</a></div>";
+		$output .= $this->shift_start;
+		$output .= "</div>";
+		$output .= $this->listGroupItemDurationBadge();
+		
+		$output .= "</li>";
+		
+		return $output;
+	}
+	
+	private function listGroupItemDurationBadge() {
+		$shiftEditURL = "index.php?page=shift_edit&uid=" . $this->uid;
+		$icon = is_null($this->shift_end) ? " " . icon('hourglass-split') : "";
+		
+		if (empty($this->shift_end)) {
+			if (date('Y-m-d', strtotime($this->shift_start)) < date('Y-m-d')) {
+				$badgeClass = "text-bg-danger";
+			} else {
+				$badgeClass = "text-bg-primary";
+			}
+		} else {
+			$badgeClass = "text-bg-success";
+		}
+		
+		$output = $icon . "<a href=\"" . $shiftEditURL . "\"><span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($this->totalMinutes()) . "</a></span>";
+		
+		return $output;
+	}
+	
 	public function totalMinutes() {
 		return shiftDurationMinutes($this->shift_start, $this->shift_end);
 	}
