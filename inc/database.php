@@ -60,18 +60,7 @@ class Database {
 		
 		// Execute the query
 		$result = $stmt->execute();
-		if ($result == 1) {
-			$log->create([
-				'category'    => $table,
-				'result'      => 'success',
-				'description' => sprintf(
-					'Inserted into table %s with values: %s where uid = %s',
-					$table,
-					implode(", ", $updates),
-					$whereValue
-				),
-			]);
-		} else {
+		if ($result != 1) {
 			$log->create([
 				'category'    => $table,
 				'result'      => 'danger',
@@ -128,11 +117,6 @@ class Database {
 	
 		// If nothing has changed, skip the update
 		if (empty($setParts)) {
-			$log->create([
-				'category'    => $table,
-				'result'      => 'info',
-				'description' => "No changes detected for $table where $whereColumn = $whereValue",
-			]);
 			return true; // nothing to do, but not a failure
 		}
 	
@@ -148,19 +132,7 @@ class Database {
 		$stmtUpdate->bindValue(':whereValue', $whereValue);
 	
 		$result = $stmtUpdate->execute();
-	
-		$log->create([
-			'category'    => $table,
-			'result'      => $result ? 'success' : 'danger',
-			'description' => sprintf(
-				'Updated table %s with values: %s where %s = %s',
-				$table,
-				implode(", ", $updates),
-				$whereColumn,
-				$whereValue
-			),
-		]);
-	
+		
 		return $result;
 	}
 	
@@ -176,18 +148,7 @@ class Database {
 		$result = $stmt->execute();
 	
 		// Log the result
-		if ($result == 1) {
-			$log->create([
-				'category'    => $table,
-				'result'      => 'warning',
-				'description' => sprintf(
-					'Deleted from table %s where %s = %s',
-					$table,
-					$whereColumn,
-					$whereValue
-				),
-			]);
-		} else {
+		if ($result != 1) {
 			$log->create([
 				'category'    => $table,
 				'result'      => 'danger',
@@ -202,7 +163,6 @@ class Database {
 	
 		return $result;
 	}
-
 }
 
 // Usage

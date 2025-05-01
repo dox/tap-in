@@ -64,12 +64,19 @@ class Staff {
 			$staffData['last_tapin'] = date('c');
 			$db->update('staff', $staffData, 'uid', $this->uid);
 			
+			$logData = [
+				'category' => 'staff',
+				'result'   => 'success',
+				'description' => 'Tapin for code ' . $this->code . ' successfull for ' . $this->fullname()
+			];
+			$log->create($logData);
+			
 			return true;
 		} else {
 			$logData = [
 				'category' => 'staff',
 				'result'   => 'warning',
-				'description' => 'Attempted to tapin when there was already an open shift for ' . $this->fullname()
+				'description' => 'Tapin for code ' . $this->code . ' failed (shift already open) for ' . $this->fullname()
 			];
 			$log->create($logData);
 			
@@ -91,12 +98,19 @@ class Staff {
 			$staffData['last_tapin'] = date('c');
 			$db->update('staff', $staffData, 'uid', $this->uid);
 			
+			$logData = [
+				'category' => 'staff',
+				'result'   => 'success',
+				'description' => 'Tapout for code ' . $this->code . ' successfull for ' . $this->fullname()
+			];
+			$log->create($logData);
+			
 			return true;
 		} else {
 			$logData = [
 				'category' => 'staff',
 				'result'   => 'warning',
-				'description' => 'Attempted to close shift when no open shift existed for ' . $this->fullname()
+				'description' => 'Tapout for code ' . $this->code . ' failed (no shift open) for ' . $this->fullname()
 			];
 			$log->create($logData);
 			
