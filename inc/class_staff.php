@@ -180,14 +180,11 @@ class Staff {
 			WHERE staff_uid = '" . $this->uid . "'";
 	
 		// Add date range conditions if provided
-		if ($from) {
-			$sql .= " AND shift_start >= '" . $from . "'";
+		if ($from && $to) {
+			//$sql .= " AND shift_start >= '" . $from . "'";
+			$sql .= " AND DATE(shift_start) BETWEEN '" . $from . "' AND '" . $to . "'";
 		}
-	
-		if ($to) {
-			$sql .= " AND shift_start <= '" . $to . "'";
-		}
-	
+		
 		// Execute the query
 		$shiftsSum = $db->get($sql);
 	

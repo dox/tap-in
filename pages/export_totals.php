@@ -2,6 +2,7 @@
 // Define column keys (in desired order)
 $columns = [
 	'staff_uid',
+	'total_month',
 	'staff_name',
 	'staff_code',
 	'staff_payroll_id',
@@ -49,6 +50,7 @@ foreach ($staffAll as $staff) {
 		
 		// Assign each value in order
 		$row[] = $staff->uid;
+		$row[] = date('Y F', strtotime($from));
 		$row[] = $staff->fullname();
 		$row[] = $staff->code;
 		$row[] = $staff->payroll_id;

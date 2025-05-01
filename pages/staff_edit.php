@@ -22,17 +22,38 @@ if ($uid) {
 <div class="container">
 	<?php if ($uid): ?>
 	<div class="row">
-		<!-- Stats cards -->
-		<?php foreach ([['Total Hours', $totalHours], ['Last Month (' . date('F', strtotime('first day of last month')) . ')', $totalLastMonth], ['This Month (' . date('F') . ')', $totalThisMonth], ['This Week', $totalThisWeek]] as [$label, $value]): ?>
-			<div class="col">
-				<div class="card mb-3">
-					<div class="card-body">
-						<div class="subheader text-nowrap text-truncate"><?= $label ?></div>
-						<div class="h1 text-truncate"><?= convertMinutesToHours($value) ?></div>
-					</div>
+		<div class="col">
+			<div class="card mb-3">
+				<div class="card-body">
+					<div class="subheader text-nowrap text-truncate">Total Hours</div>
+					<div class="h1 text-truncate"><?= convertMinutesToHours($totalHours) ?></div>
 				</div>
 			</div>
-		<?php endforeach; ?>
+		</div>
+		<div class="col">
+			<div class="card mb-3">
+				<div class="card-body">
+					<div class="subheader text-nowrap text-truncate">Last Month (<?= date('F', strtotime('first day of last month')); ?>)</div>
+					<div class="h1 text-truncate"><?= convertMinutesToHours($totalLastMonth) ?></div>
+				</div>
+			</div>
+		</div>
+		<div class="col">
+			<div class="card mb-3">
+				<div class="card-body">
+					<div class="subheader text-nowrap text-truncate">This Month (<?= date('F', strtotime('first day of this month')); ?>)</div>
+					<div class="h1 text-truncate"><?= convertMinutesToHours($totalThisMonth) ?></div>
+				</div>
+			</div>
+		</div>
+		<div class="col">
+			<div class="card mb-3">
+				<div class="card-body">
+					<div class="subheader text-nowrap text-truncate">This Week</div>
+					<div class="h1 text-truncate"><?= convertMinutesToHours($totalThisWeek) ?></div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<?php endif; ?>
 
