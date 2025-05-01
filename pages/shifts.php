@@ -31,8 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		}
 
 		if ($dbAttempt) {
+			$logData = [
+				'category' => 'shift',
+				'result'   => 'success',
+				'description' => 'Shift record for ' . $uid . ' updated with ' . implode(", ", $_POST)
+			];
+			$log->create($logData);
+			
 			echo alert('success', "Success!", "Shift updated successfully!");
 		} else {
+			$logData = [
+				'category' => 'shift',
+				'result'   => 'warning',
+				'description' => 'Shift record for ' . $uid . ' failed to update with ' . implode(", ", $_POST)
+			];
+			$log->create($logData);
+			
 			echo alert('danger', "Error!", "Failed to update shift.");
 		}
 	}

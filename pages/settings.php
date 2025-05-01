@@ -10,8 +10,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$updateSuccess = $db->update('settings', $data, 'uid', $_POST['uid']);
 
 	if ($updateSuccess) {
+		$logData = [
+			'category' => 'setting',
+			'result'   => 'success',
+			'description' => 'Setting record for ' . $uid . ' updated with ' . implode(", ", $_POST)
+		];
+		$log->create($logData);
+		
 		echo alert('success', "Success!", "Setting updated successfully!");
 	} else {
+		$logData = [
+			'category' => 'setting',
+			'result'   => 'warning',
+			'description' => 'Setting record for ' . $uid . ' failed to update with ' . implode(", ", $_POST)
+		];
+		$log->create($logData);
+		
 		echo alert('danger', "Error!", "Failed to update setting.");
 	}
 }

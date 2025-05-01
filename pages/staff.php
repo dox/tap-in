@@ -31,8 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		}
 
 		if ($dbAttempt) {
+			$logData = [
+				'category' => 'staff',
+				'result'   => 'success',
+				'description' => 'Staff record for ' . $uid . ' updated with ' . implode(", ", $_POST)
+			];
+			$log->create($logData);
+			
 			echo alert('success', "Success!", "Staff updated successfully!");
 		} else {
+			$logData = [
+				'category' => 'staff',
+				'result'   => 'warning',
+				'description' => 'Staff record for ' . $uid . ' failed to update with ' . implode(", ", $_POST)
+			];
+			$log->create($logData);
+			
 			echo alert('danger', "Error!", "Failed to update staff.");
 		}
 	}
