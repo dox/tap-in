@@ -53,5 +53,6 @@ require_once 'inc/autoload.php';
 			</div>
 		</div>
 	</div>
+	<script src="js/main.js"></script>
 	</body>
 </html>
