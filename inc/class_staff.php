@@ -165,12 +165,9 @@ class Staff {
 		$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $this->uid . "'";
 		
 		// Add date range conditions if provided
-		if ($from) {
-			$sql .= " AND shift_start >= '" . $from . "'";
-		}
-		
-		if ($to) {
-			$sql .= " AND shift_start <= '" . $to . "'";
+		if ($from && $to) {
+			//$sql .= " AND shift_start >= '" . $from . "'";
+			$sql .= " AND DATE(shift_start) BETWEEN '" . $from . "' AND '" . $to . "'";
 		}
 		
 		// Execute the query
