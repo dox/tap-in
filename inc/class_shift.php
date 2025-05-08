@@ -36,8 +36,14 @@ class Shift {
 			$shiftDurationHelper .= " " . icon('hourglass-split');
 		}
 		
+		if (isset($this->shift_end) && date('Y-m-d', strtotime($this->shift_start)) != date('Y-m-d', strtotime($this->shift_end))) {
+			$trClass = "table-warning";
+		} else {
+			$trClass = "";
+		}
+		
 		// Return the table row as a string, directly building it
-		return '<tr>'
+		return '<tr class="' . $trClass . '">'
 			. '<th scope="row"><a href="' . $staffURL . '">' . htmlspecialchars($staff->fullname()) . '</a></th>'
 			. '<td>' . dateDisplay($this->shift_start, true) . '</td>'
 			. '<td>' . dateDisplay($this->shift_end, true) . '</td>'
