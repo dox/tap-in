@@ -73,7 +73,11 @@ class Shift {
 				$badgeClass = "text-bg-primary";
 			}
 		} else {
-			$badgeClass = "text-bg-success";
+			if (date('Y-m-d', strtotime($this->shift_start)) != date('Y-m-d', strtotime($this->shift_end))) {
+				$badgeClass = "text-bg-warning";
+			} else {
+				$badgeClass = "text-bg-success";
+			}
 		}
 		
 		$output = $icon . "<a href=\"" . $shiftEditURL . "\"><span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($this->totalMinutes()) . "</a></span>";
