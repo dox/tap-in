@@ -35,6 +35,15 @@ require_once 'inc/autoload.php';
 						
 						<label for="floatingPassword">Password</label>
 					  </div>
+					  <div class="form-floating text-end">
+						  <?php
+						  if (reset_url) {
+							  echo "<span class=\"form-label-description\">";
+							  echo "<a href=\"" . reset_url . "\" class=\"text-muted\">Forgot Password?</a>";
+							  echo "</span>";
+						  }
+						  ?>
+					  </div>
 				  
 					  <!--<div class="form-check text-start my-3">
 						<input class="form-check-input" type="checkbox" value="remember-me" id="checkDefault">

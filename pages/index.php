@@ -7,7 +7,7 @@
 		</div>
 		<div class="col-md-4">
 			<?php
-			$sql = "SELECT * FROM shifts WHERE shift_end IS NULL ORDER BY shift_start DESC";
+			$sql = "SELECT uid FROM shifts WHERE shift_end IS NULL ORDER BY shift_start DESC";
 			$openShifts = $db->get($sql);
 			
 			if (count($openShifts) > 0) {
@@ -22,46 +22,25 @@
 				
 				echo $output;
 			}
-			?>
-			<h2>Recent Shifts</h2>
 			
-			<ol class="list-group list-group">
-			<?php
 			$limit = setting('staff_previous_shifts_display');
+			$sql = "SELECT uid FROM shifts WHERE shift_end IS NOT NULL ORDER BY shift_start DESC LIMIT " . $limit;
+			$recentShifts = $db->get($sql);
 			
-			$sql = "SELECT * FROM shifts WHERE shift_end IS NOT NULL ORDER BY shift_start DESC LIMIT " . $limit;
-			$openShifts = $db->get($sql);
+			echo "<h2>Recent Shifts</h2>";
 			
-			foreach ($openShifts AS $shift) {
+			$output  = "<ol class=\"list-group list-group mb-3\">";
+			foreach ($recentShifts AS $shift) {
 				$shift = new Shift($shift['uid']);
-				$staff = new Staff($shift->staff_uid);
-				$staffEditURL = "index.php?page=staff_edit&uid=" . $staff->uid;
-				$shiftEditURL = "index.php?page=shift_edit&uid=" . $shift->uid;
-				
-				if (empty($shift->shift_end)) {
-					$badgeClass = "text-bg-primary";
-				} else {
-					$badgeClass = "text-bg-success";
-				}
-				
-				$output  = "<li class=\"list-group-item d-flex justify-content-between align-items-start\">";
-				$output .= "<div class=\"ms-2 me-auto\">";
-				$output .= "<div class=\"fw-bold\"><a href=\"" . $staffEditURL . "\">" . $staff->fullname() . "</a></div>";
-				$output .= $shift->shift_start;
-				$output .= "</div>";
-				$output .= "<a href=\"" . $shiftEditURL . "\"><span class=\"badge " . $badgeClass . " rounded-pill\">" . convertMinutesToHours($shift->totalMinutes()) . "</a></span>";
-				$output .= "</li>";
-				
-				echo $output;
+				$output .= $shift->listGroupItem();
 			}
+			$output .= "</ol>";
+			
+			echo $output;
 			?>
-			</ol>
 		</div>
 	</div>
 </div>
-
-
-
 
 <?php
 // Array to hold the last 30 days
