@@ -59,7 +59,7 @@ foreach ($staffAll as $staff) {
 		$log->create([
 			'category'    => 'email',
 			'result'      => 'success',
-			'description' => 'Email sent to ' . $staff->email
+			'description' => 'Email sent to: ' . $staff->email . '. Message: ' . $message
 		]);
 	}
 }
