@@ -102,23 +102,21 @@ foreach ($grouped as $label => $shiftsGroup) {
 
 	$table  = "<h2>{$label}</h2>";
 	
-	$table .= "<table class=\"table\">";
+	$table .= "<table class=\"table mb-5\">";
 	$table .= "<thead>";
 	$table .= "<tr>";
 	$table .= "<th scope=\"col\">Name</th>";
-	$table .= "<th scope=\"col\">Shift Start</th>";
-	$table .= "<th scope=\"col\">Shift End</th>";
-	$table .= "<th scope=\"col\">Duration</th>";
-	$table .= "<th scope=\"col\"></th>";
+	$table .= "<th scope=\"col\" style=\"width:20%\">Shift Start</th>";
+	$table .= "<th scope=\"col\" style=\"width:20%\">Shift End</th>";
+	$table .= "<th scope=\"col\" style=\"width:10%\">Duration</th>";
+	$table .= "<th scope=\"col\" style=\"width:10%\"></th>";
 	$table .= "</tr>";
 	$table .= "</thead>";
 	$table .= "<tbody>";
 	
 	foreach ($shiftsGroup as $shift) {
-		//echo "<li>{$shift->shift_start} — {$shift->staff_uid}</li>\n";
 		$table .= $shift->tableRow();
 	}
-	//echo "</ul>\n";
 	
 	$table .= "</tbody>";
 	$table .= "</table>";
