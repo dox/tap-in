@@ -63,12 +63,12 @@ $staffAll = $db->get($sql);
 </div>
 
 <?php
-$table  = "<table class=\"table\">";
+$table  = "<table id=\"staffTable\" class=\"table\">";
 $table .= "<thead>";
 $table .= "<tr>";
-$table .= "<th scope=\"col\">Name</th>";
-$table .= "<th scope=\"col\">Code</th>";
-$table .= "<th scope=\"col\">Last Tap-In</th>";
+$table .= "<th scope=\"col\" onclick=\"sortTable(0)\">Name</th>";
+$table .= "<th scope=\"col\" onclick=\"sortTable(1)\">Code</th>";
+$table .= "<th scope=\"col\" onclick=\"sortTable(2)\">Last Tap-In</th>";
 $table .= "</tr>";
 $table .= "</thead>";
 $table .= "<tbody>";
@@ -84,3 +84,31 @@ $table .= "</table>";
 echo $table;
 
 ?>
+
+
+<script>
+function sortTable(colIndex) {
+  const table = document.getElementById("staffTable");
+  const rows = Array.from(table.rows).slice(1); // skip header
+  const isAsc = table.getAttribute("data-sort-dir") !== "asc"; // toggle asc/desc
+  
+  rows.sort((a, b) => {
+	let x = a.cells[colIndex].innerText.toLowerCase();
+	let y = b.cells[colIndex].innerText.toLowerCase();
+
+	// try numeric comparison if both are numbers
+	if (!isNaN(x) && !isNaN(y)) {
+	  x = Number(x);
+	  y = Number(y);
+	}
+	return isAsc ? (x > y ? 1 : -1) : (x > y ? -1 : 1);
+  });
+
+  // put sorted rows back into tbody
+  const tbody = table.tBodies[0];
+  rows.forEach(row => tbody.appendChild(row));
+
+  // save new sort direction
+  table.setAttribute("data-sort-dir", isAsc ? "asc" : "desc");
+}
+</script>
