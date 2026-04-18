@@ -151,9 +151,11 @@ class Staff {
 	public function openShifts() {
 		global $db;
 		
-		$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $this->uid . "' AND shift_end IS NULL ORDER BY shift_start";
+		$sql = "SELECT * FROM shifts WHERE staff_uid = :staff_uid AND shift_end IS NULL ORDER BY shift_start";
 		
-		$shifts = $db->get($sql);
+		$shifts = $db->get($sql, [
+			'staff_uid' => $this->uid,
+		]);
 		
 		return $shifts;
 	}
@@ -161,17 +163,18 @@ class Staff {
 	public function shiftsBetweenDates($from = null, $to = null) {
 		global $db;
 		
-		// Start building the SQL query
-		$sql = "SELECT * FROM shifts WHERE staff_uid = '" . $this->uid . "'";
+		$sql = "SELECT * FROM shifts WHERE staff_uid = :staff_uid";
+		$params = [
+			'staff_uid' => $this->uid,
+		];
 		
-		// Add date range conditions if provided
 		if ($from && $to) {
-			//$sql .= " AND shift_start >= '" . $from . "'";
-			$sql .= " AND DATE(shift_start) BETWEEN '" . $from . "' AND '" . $to . "'";
+			$sql .= " AND DATE(shift_start) BETWEEN :from AND :to";
+			$params['from'] = $from;
+			$params['to'] = $to;
 		}
 		
-		// Execute the query
-		$results = $db->get($sql);
+		$results = $db->get($sql, $params);
 		
 		return $results;
 	}
@@ -182,22 +185,23 @@ class Staff {
 	
 	public function totalMinutesBetweenDates($from = null, $to = null) {
 		global $db;
-	
-		// Start building the SQL query
+		
 		$sql = "SELECT SUM(
 				TIMESTAMPDIFF(MINUTE, shift_start, IFNULL(shift_end, NOW()))
 			) AS total_minutes
 			FROM shifts
-			WHERE staff_uid = '" . $this->uid . "'";
-	
-		// Add date range conditions if provided
+			WHERE staff_uid = :staff_uid";
+		$params = [
+			'staff_uid' => $this->uid,
+		];
+		
 		if ($from && $to) {
-			//$sql .= " AND shift_start >= '" . $from . "'";
-			$sql .= " AND DATE(shift_start) BETWEEN '" . $from . "' AND '" . $to . "'";
+			$sql .= " AND DATE(shift_start) BETWEEN :from AND :to";
+			$params['from'] = $from;
+			$params['to'] = $to;
 		}
 		
-		// Execute the query
-		$shiftsSum = $db->get($sql);
+		$shiftsSum = $db->get($sql, $params);
 	
 		// Check if there's a result and set total accordingly
 		if ($shiftsSum[0]['total_minutes'] > 0) {

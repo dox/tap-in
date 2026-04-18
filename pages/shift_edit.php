@@ -24,10 +24,11 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 </h1>
 
 <div class="row">
-	<div class="col-md-8 mb-3">
-		<form method="POST" action="index.php?page=shifts">
-			<div class="mb-3">
-				<label for="staff_uid" class="form-label">Staff Member</label>
+		<div class="col-md-8 mb-3">
+			<form method="POST" action="index.php?page=shifts">
+				<?php echo csrfInput(); ?>
+				<div class="mb-3">
+					<label for="staff_uid" class="form-label">Staff Member</label>
 				<select id="staff_uid" name="staff_uid" class="form-select">
 					<?php
 					foreach ($staffAll as $staffOption) {

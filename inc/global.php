@@ -38,6 +38,26 @@ function alert($type, $title, $content) {
 	return $output;
 }
 
+function csrfToken() {
+	if (empty($_SESSION['csrf_token'])) {
+		$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+	}
+
+	return $_SESSION['csrf_token'];
+}
+
+function csrfInput() {
+	return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrfToken(), ENT_QUOTES, 'UTF-8') . '">';
+}
+
+function csrfTokenIsValid($token) {
+	if (!is_string($token) || empty($_SESSION['csrf_token'])) {
+		return false;
+	}
+
+	return hash_equals($_SESSION['csrf_token'], $token);
+}
+
 function icon(string $iconName, string $size = '16'): string {
 	$iconPath = $_SERVER["DOCUMENT_ROOT"] . '/icons/' . $iconName . '.svg';  // Path to the icon file
 

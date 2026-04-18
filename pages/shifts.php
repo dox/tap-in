@@ -1,53 +1,57 @@
 <?php
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$uid = $_POST['uid'] ?? null;
-
-	if (isset($_POST['delete']) && $uid) {
-		// Handle delete request
-		$dbAttempt = $db->delete('shifts', 'uid', $uid);
-		
-		if ($dbAttempt) {
-			echo alert('success', "Deleted!", "Shift deleted successfully.");
-		} else {
-			echo alert('danger', "Error!", "Failed to delete shift.");
-		}
+	if (!csrfTokenIsValid($_POST['csrf_token'] ?? null)) {
+		echo alert('danger', 'Error!', 'Your session token was invalid. Please try again.');
 	} else {
-		// Handle create/update
-		$data = [
-			'staff_uid' => $_POST['staff_uid'],
-			'shift_start' => $_POST['shift_start'],
-			'shift_end' => $_POST['shift_end']
-		];
-		
-		if (empty($_POST['shift_end'])) {
-			$data['shift_end'] = null;
-		}
-		
-		if ($uid) {
-			$dbAttempt = $db->update('shifts', $data, 'uid', $uid);
-		} else {
-			$dbAttempt = $db->create('shifts', $data);
-		}
+		$uid = $_POST['uid'] ?? null;
 
-		if ($dbAttempt) {
-			$logData = [
-				'category' => 'shift',
-				'result'   => 'success',
-				'description' => 'Shift record for ' . $uid . ' updated with ' . implode(", ", $_POST)
-			];
-			$log->create($logData);
+		if (isset($_POST['delete']) && $uid) {
+			// Handle delete request
+			$dbAttempt = $db->delete('shifts', 'uid', $uid);
 			
-			echo alert('success', "Success!", "Shift updated successfully!");
+			if ($dbAttempt) {
+				echo alert('success', "Deleted!", "Shift deleted successfully.");
+			} else {
+				echo alert('danger', "Error!", "Failed to delete shift.");
+			}
 		} else {
-			$logData = [
-				'category' => 'shift',
-				'result'   => 'warning',
-				'description' => 'Shift record for ' . $uid . ' failed to update with ' . implode(", ", $_POST)
+			// Handle create/update
+			$data = [
+				'staff_uid' => $_POST['staff_uid'],
+				'shift_start' => $_POST['shift_start'],
+				'shift_end' => $_POST['shift_end']
 			];
-			$log->create($logData);
 			
-			echo alert('danger', "Error!", "Failed to update shift.");
+			if (empty($_POST['shift_end'])) {
+				$data['shift_end'] = null;
+			}
+			
+			if ($uid) {
+				$dbAttempt = $db->update('shifts', $data, 'uid', $uid);
+			} else {
+				$dbAttempt = $db->create('shifts', $data);
+			}
+
+			if ($dbAttempt) {
+				$logData = [
+					'category' => 'shift',
+					'result'   => 'success',
+					'description' => 'Shift record for ' . $uid . ' updated with ' . implode(", ", $_POST)
+				];
+				$log->create($logData);
+				
+				echo alert('success', "Success!", "Shift updated successfully!");
+			} else {
+				$logData = [
+					'category' => 'shift',
+					'result'   => 'warning',
+					'description' => 'Shift record for ' . $uid . ' failed to update with ' . implode(", ", $_POST)
+				];
+				$log->create($logData);
+				
+				echo alert('danger', "Error!", "Failed to update shift.");
+			}
 		}
 	}
 }
