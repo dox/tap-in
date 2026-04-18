@@ -17,3 +17,13 @@
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.table-row-action {
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+tr:hover .table-row-action,
+tr:focus-within .table-row-action {
+  opacity: 1;
+}

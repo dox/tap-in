@@ -25,7 +25,7 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 
 <div class="row">
 		<div class="col-md-8 mb-3">
-			<form method="POST" action="index.php?page=shifts">
+			<form method="POST" action="index.php?page=shifts" class="card card-body">
 				<?php echo csrfInput(); ?>
 				<div class="mb-3">
 					<label for="staff_uid" class="form-label">Staff Member</label>
@@ -55,10 +55,15 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 				</div>
 			</div>
 		
-			<button type="submit" class="btn btn-primary"><?php echo $isEditing ? "Update" : "Create"; ?></button>
+			<div class="d-flex flex-wrap gap-2">
+				<button type="submit" class="btn btn-primary"><?php echo $isEditing ? "Update" : "Create"; ?></button>
+				<a class="btn btn-outline-secondary" href="index.php?page=shifts">Back to Shifts</a>
+			</div>
 		
 			<?php if ($isEditing): ?>
-				<button type="submit" name="delete" value="1" class="btn btn-danger" onclick="return confirmDelete();">Delete</button>
+				<div class="border-top pt-3 mt-3">
+					<button type="submit" name="delete" value="1" class="btn btn-outline-danger" onclick="return confirmDelete();">Delete</button>
+				</div>
 				<input type="hidden" name="uid" value="<?php echo $shift->uid; ?>" />
 			<?php endif; ?>
 		</form>
@@ -66,13 +71,13 @@ $staffAll = $db->get("SELECT * FROM staff ORDER BY lastname ASC");
 	<div class="col-md-4">
 		<div class="card mb-3">
 			<div class="card-body">
-				<div class="subheader text-nowrap text-truncate">Total Shift Duration</div>
+				<div class="text-muted text-uppercase small fw-semibold">Total Shift Duration</div>
 				<div class="h1 text-truncate"><?php echo convertMinutesToHours($shift->totalMinutes()); ?></div>
 			</div>
 		</div>
 		<div class="card mb-3">
 			<div class="card-body">
-				<div class="subheader text-nowrap text-truncate">Rounded Up Duration <i>(Nearest <?php echo $roundUp = setting('shift_roundup'); ?> minutes)</i></div>
+				<div class="text-muted text-uppercase small fw-semibold">Rounded Up Duration <i>(Nearest <?php echo $roundUp = setting('shift_roundup'); ?> minutes)</i></div>
 				<div class="h1 text-truncate"><?php echo convertMinutesToHours($shift->totalMinutesRoundedUp()); ?></div>
 			</div>
 		</div>

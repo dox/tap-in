@@ -226,11 +226,14 @@ class Staff {
 		} else {
 			$emailIcon = "<a href=\"#\" class=\"btn btn-link disabled\">" . icon('blank') . "</a>";
 		}
+
+		$editIcon = "<a href=\"" . $staffURL . "\" class=\"table-row-action text-secondary\">" . icon('pencil-square') . "</a>";
 		// Return the table row as a string, directly building it
 		return '<tr class=' . $class . '>'
 			. '<th scope="row">' . $emailIcon . ' <a href="' . $staffURL . '">' . htmlspecialchars($this->fullname()) . '</a></th>'
 			. '<td><kbd>' . htmlspecialchars($this->code) . '</kbd></td>'
 			. '<td>' . dateDisplay($this->last_tapin, true) . '</td>'
+			. '<td class="text-end">' . $editIcon . '</td>'
 			. '</tr>';
 	}
 	

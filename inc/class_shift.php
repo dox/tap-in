@@ -48,7 +48,7 @@ class Shift {
 			. '<td>' . dateDisplay($this->shift_start, true) . '</td>'
 			. '<td>' . dateDisplay($this->shift_end, true) . '</td>'
 			. '<td>' . $shiftDurationHelper . convertMinutesToHours($shiftDuration) . '</td>'
-			. '<td><a href="' . $shiftEditURL . '">' . icon('pencil-square') . '</a></td>'
+			. '<td class="text-end"><a href="' . $shiftEditURL . '" class="table-row-action text-secondary">' . icon('pencil-square') . '</a></td>'
 			. '</tr>';
 	}
 	

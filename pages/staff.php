@@ -73,6 +73,7 @@ $table .= "<tr>";
 $table .= "<th scope=\"col\" onclick=\"sortTable(0)\">Name</th>";
 $table .= "<th scope=\"col\" onclick=\"sortTable(1)\">Code</th>";
 $table .= "<th scope=\"col\" onclick=\"sortTable(2)\">Last Tap-In</th>";
+$table .= "<th scope=\"col\" class=\"text-end\"></th>";
 $table .= "</tr>";
 $table .= "</thead>";
 $table .= "<tbody>";

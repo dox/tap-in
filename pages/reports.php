@@ -1,4 +1,5 @@
 <h1><?php echo icon('cloud-download', '1em'); ?> Reports</h1>
+<p class="text-muted mb-4">Download staff, totals, and shift reports using the built-in export options below.</p>
 
 <?php
 // Generate the months array (current + previous 12 months)
@@ -18,7 +19,7 @@ for ($i = 0; $i <= 12; $i++) {
 ?>
 <div class="row row-cols-1 row-cols-md-3 g-4">
 	<div class="col">
-		<div class="card">
+		<div class="card h-100">
 			<div class="card-body">
 				<h5 class="card-title">Totals</h5>
 				<p class="card-text">An export of staff and their total worked hours</p>
@@ -43,7 +44,7 @@ for ($i = 0; $i <= 12; $i++) {
 		</div>
 	</div>
 	<div class="col">
-		<div class="card">
+		<div class="card h-100">
 			<div class="card-body">
 				<h5 class="card-title">Staff</h5>
 				<p class="card-text">An export of all staff</p>
@@ -59,7 +60,7 @@ for ($i = 0; $i <= 12; $i++) {
 		</div>
 	</div>
 	<div class="col">
-		<div class="card">
+		<div class="card h-100">
 			<div class="card-body">
 				<h5 class="card-title">Shifts</h5>
 				<p class="card-text">An export of all shifts</p>

@@ -30,7 +30,7 @@ requireLogin(); // Redirects if not logged in
 		?>
 		
 		<footer class="py-3 my-4 border-top">
-			<span class="text-muted">© 2025 <a href="https://github.com/dox/tap-in" class="link-secondary">github/dox/tap-in</a></span>
+			<span class="text-muted">© 2025 - <?= date('Y') ?> <a href="https://github.com/dox/tap-in" class="link-secondary">github/dox/tap-in</a></span>
 		</footer>
 	</div>
 	

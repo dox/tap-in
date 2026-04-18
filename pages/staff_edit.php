@@ -21,35 +21,35 @@ if ($uid) {
 
 <div class="container">
 	<?php if ($uid): ?>
-	<div class="row">
-		<div class="col">
+	<div class="row g-3">
+		<div class="col-6 col-xl-3">
 			<div class="card mb-3">
 				<div class="card-body">
-					<div class="subheader text-nowrap text-truncate">Total Hours</div>
+					<div class="text-muted text-uppercase small fw-semibold">Total Hours</div>
 					<div class="h1 text-truncate"><?= convertMinutesToHours($totalHours) ?></div>
 				</div>
 			</div>
 		</div>
-		<div class="col">
+		<div class="col-6 col-xl-3">
 			<div class="card mb-3">
 				<div class="card-body">
-					<div class="subheader text-nowrap text-truncate">Last Month (<?= date('F', strtotime('first day of last month')); ?>)</div>
+					<div class="text-muted text-uppercase small fw-semibold">Last Month (<?= date('F', strtotime('first day of last month')); ?>)</div>
 					<div class="h1 text-truncate"><?= convertMinutesToHours($totalLastMonth) ?></div>
 				</div>
 			</div>
 		</div>
-		<div class="col">
+		<div class="col-6 col-xl-3">
 			<div class="card mb-3">
 				<div class="card-body">
-					<div class="subheader text-nowrap text-truncate">This Month (<?= date('F', strtotime('first day of this month')); ?>)</div>
+					<div class="text-muted text-uppercase small fw-semibold">This Month (<?= date('F', strtotime('first day of this month')); ?>)</div>
 					<div class="h1 text-truncate"><?= convertMinutesToHours($totalThisMonth) ?></div>
 				</div>
 			</div>
 		</div>
-		<div class="col">
+		<div class="col-6 col-xl-3">
 			<div class="card mb-3">
 				<div class="card-body">
-					<div class="subheader text-nowrap text-truncate">This Week</div>
+					<div class="text-muted text-uppercase small fw-semibold">This Week</div>
 					<div class="h1 text-truncate"><?= convertMinutesToHours($totalThisWeek) ?></div>
 				</div>
 			</div>
@@ -59,7 +59,7 @@ if ($uid) {
 
 	<div class="row">
 		<div class="col-md-8">
-			<form class="needs-validation" method="POST" action="index.php?page=staff" novalidate>
+			<form class="needs-validation card card-body" method="POST" action="index.php?page=staff" novalidate>
 				<?php echo csrfInput(); ?>
 				<div class="mb-3">
 					<label for="firstname" class="form-label">First Name</label>
@@ -102,8 +102,13 @@ if ($uid) {
 					<label class="form-check-label" for="enabled">Enabled</label>
 				</div>
 				
-				<button type="submit" class="btn btn-primary">Submit</button>
-				<button type="submit" name="delete" value="1" class="btn btn-danger" onclick="return confirmDelete();">Delete</button>
+				<div class="d-flex flex-wrap gap-2">
+					<button type="submit" class="btn btn-primary">Submit</button>
+					<a class="btn btn-outline-secondary" href="index.php?page=staff">Back to Staff</a>
+				</div>
+				<div class="border-top pt-3 mt-3">
+					<button type="submit" name="delete" value="1" class="btn btn-outline-danger" onclick="return confirmDelete();">Delete</button>
+				</div>
 				<input type="hidden" name="uid" value="<?= htmlspecialchars($staff->uid ?? '') ?>" />
 			</form>
 		</div>

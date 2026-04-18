@@ -87,25 +87,29 @@ $shiftsAll = $db->query($sql, [
 ?>
 
 <h1><?php echo icon('hourglass-split', '1em'); ?> Shifts</h1>
-<div class="row g-3 align-items-end pb-3">
-	<div class="col-12 col-lg">
-		<form action="index.php" method="get" class="row g-3 align-items-end">
-			<input type="hidden" name="page" value="shifts">
-			<div class="col-12 col-md-4">
-				<label for="from" class="form-label">From</label>
-				<input type="date" class="form-control" id="from" name="from" value="<?php echo htmlspecialchars($fromValue); ?>" max="<?php echo htmlspecialchars($toValue); ?>">
+<div class="card mb-3">
+	<div class="card-body">
+		<div class="row g-3 align-items-end">
+			<div class="col-12 col-lg">
+				<form action="index.php" method="get" class="row g-3 align-items-end">
+					<input type="hidden" name="page" value="shifts">
+					<div class="col-12 col-md-4">
+						<label for="from" class="form-label">From</label>
+						<input type="date" class="form-control" id="from" name="from" value="<?php echo htmlspecialchars($fromValue); ?>" max="<?php echo htmlspecialchars($toValue); ?>">
+					</div>
+					<div class="col-12 col-md-4">
+						<label for="to" class="form-label">To</label>
+						<input type="date" class="form-control" id="to" name="to" value="<?php echo htmlspecialchars($toValue); ?>" min="<?php echo htmlspecialchars($fromValue); ?>">
+					</div>
+					<div class="col-12 col-md-auto">
+						<button class="btn btn-outline-secondary w-100" type="submit">Apply</button>
+					</div>
+				</form>
 			</div>
-			<div class="col-12 col-md-4">
-				<label for="to" class="form-label">To</label>
-				<input type="date" class="form-control" id="to" name="to" value="<?php echo htmlspecialchars($toValue); ?>" min="<?php echo htmlspecialchars($fromValue); ?>">
+			<div class="col-12 col-lg-auto text-lg-end">
+				<a class="btn btn-success w-100" href="index.php?page=shift_edit" role="button"><?php echo icon('hourglass-split'); ?> Add New</a>
 			</div>
-			<div class="col-12 col-md-auto">
-				<button class="btn btn-outline-secondary w-100" type="submit">Apply</button>
-			</div>
-		</form>
-	</div>
-	<div class="col-12 col-lg-auto text-end">
-		<a class="btn btn-success" href="index.php?page=shift_edit" role="button"><?php echo icon('hourglass-split'); ?> Add New</a>
+		</div>
 	</div>
 </div>
 
@@ -115,7 +119,8 @@ echo '<p class="text-muted">Showing ' . count($shiftsAll) . ' shifts from ' . ht
 if (empty($shiftsAll)) {
 	echo alert('info', 'No shifts found', 'There are no shifts in the selected date range.');
 } else {
-	$table  = "<table class=\"table mb-5\">";
+	$table  = "<div class=\"table-responsive mb-5\">";
+	$table .= "<table class=\"table table-striped table-hover align-middle\">";
 	$table .= "<thead>";
 	$table .= "<tr>";
 	$table .= "<th scope=\"col\">Name</th>";
@@ -134,6 +139,7 @@ if (empty($shiftsAll)) {
 
 	$table .= "</tbody>";
 	$table .= "</table>";
+	$table .= "</div>";
 
 	echo $table;
 }
