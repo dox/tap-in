@@ -1,53 +1,57 @@
 <?php
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$uid = $_POST['uid'] ?? null;
-
-	if (isset($_POST['delete']) && $uid) {
-		// Handle delete request
-		$dbAttempt = $db->delete('staff', 'uid', $uid);
-		
-		if ($dbAttempt) {
-			echo alert('success', "Deleted!", "Staff record deleted successfully.");
-		} else {
-			echo alert('danger', "Error!", "Failed to delete staff record.");
-		}
+	if (!csrfTokenIsValid($_POST['csrf_token'] ?? null)) {
+		echo alert('danger', 'Error!', 'Your session token was invalid. Please try again.');
 	} else {
-		// Handle create/update
-		$data = [
-			'firstname' => $_POST['firstname'],
-			'lastname'  => $_POST['lastname'],
-			'code'      => $_POST['code'],
-			'category'  => $_POST['category'],
-			'email'     => $_POST['email'],
-			'payroll_id'=> $_POST['payroll_id'],
-			'enabled'   => isset($_POST['enabled']) ? 1 : 0,
-		];
+		$uid = $_POST['uid'] ?? null;
 
-		if ($uid) {
-			$dbAttempt = $db->update('staff', $data, 'uid', $uid);
+		if (isset($_POST['delete']) && $uid) {
+			// Handle delete request
+			$dbAttempt = $db->delete('staff', 'uid', $uid);
+			
+			if ($dbAttempt) {
+				echo alert('success', "Deleted!", "Staff record deleted successfully.");
+			} else {
+				echo alert('danger', "Error!", "Failed to delete staff record.");
+			}
 		} else {
-			$dbAttempt = $db->create('staff', $data);
-		}
+			// Handle create/update
+			$data = [
+				'firstname' => $_POST['firstname'],
+				'lastname'  => $_POST['lastname'],
+				'code'      => $_POST['code'],
+				'category'  => $_POST['category'],
+				'email'     => $_POST['email'],
+				'payroll_id'=> $_POST['payroll_id'],
+				'enabled'   => isset($_POST['enabled']) ? 1 : 0,
+			];
 
-		if ($dbAttempt) {
-			$logData = [
-				'category' => 'staff',
-				'result'   => 'success',
-				'description' => 'Staff record for ' . $uid . ' updated with ' . implode(", ", $_POST)
-			];
-			$log->create($logData);
-			
-			echo alert('success', "Success!", "Staff updated successfully!");
-		} else {
-			$logData = [
-				'category' => 'staff',
-				'result'   => 'warning',
-				'description' => 'Staff record for ' . $uid . ' failed to update with ' . implode(", ", $_POST)
-			];
-			$log->create($logData);
-			
-			echo alert('danger', "Error!", "Failed to update staff.");
+			if ($uid) {
+				$dbAttempt = $db->update('staff', $data, 'uid', $uid);
+			} else {
+				$dbAttempt = $db->create('staff', $data);
+			}
+
+			if ($dbAttempt) {
+				$logData = [
+					'category' => 'staff',
+					'result'   => 'success',
+					'description' => 'Staff record for ' . $uid . ' updated with ' . summarisePostData($_POST)
+				];
+				$log->create($logData);
+				
+				echo alert('success', "Success!", "Staff updated successfully!");
+			} else {
+				$logData = [
+					'category' => 'staff',
+					'result'   => 'warning',
+					'description' => 'Staff record for ' . $uid . ' failed to update with ' . summarisePostData($_POST)
+				];
+				$log->create($logData);
+				
+				echo alert('danger', "Error!", "Failed to update staff.");
+			}
 		}
 	}
 }

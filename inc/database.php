@@ -65,10 +65,9 @@ class Database {
 				'category'    => $table,
 				'result'      => 'danger',
 				'description' => sprintf(
-					'Attempted to insert into table %s with values: %s where uid = %s',
+					'Attempted to insert into table %s with values: %s',
 					$table,
-					implode(", ", $updates),
-					$whereValue
+					implode(", ", $updates)
 				),
 			]);
 		}

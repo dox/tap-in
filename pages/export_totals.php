@@ -19,25 +19,22 @@ fputcsv($output, $columns);
 // Get staff
 $sql = "SELECT * FROM staff ORDER BY lastname ASC, firstname ASC";
 $staffAll = $db->query($sql);
+$dateRange = parsePostedDateRange($_POST['date_range'] ?? null);
+$from = $dateRange['from'] ?? null;
+$to = $dateRange['to'] ?? null;
+$periodLabel = $from ? date('Y F', strtotime($from)) : '';
 
 // Output data rows
 foreach ($staffAll as $staff) {
 	$staff = new Staff($staff['uid']);
 	$totalMinutes = 0;
-	
-	$totalMinutes = 0;
 	$totalMinutesRounded = 0;
+	$shifts = [];
 	
-	// Get shifts
-	if (!empty(($_POST['date_range']))) {
-		list($from, $to) = explode('|', $_POST['date_range']);
+	if ($dateRange) {
+		$shifts = $staff->shiftsBetweenDates($from, $to);
 		
-		// Basic date format check (YYYY-MM-DD)
-		if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $from) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
-			$shifts = $staff->shiftsBetweenDates($from, $to);
-		}
-		
-		foreach ($shifts AS $shift) {
+		foreach ($shifts as $shift) {
 			$shift = new Shift($shift['uid']);
 			
 			$totalMinutes += $shift->totalMinutes();
@@ -50,7 +47,7 @@ foreach ($staffAll as $staff) {
 		
 		// Assign each value in order
 		$row[] = $staff->uid;
-		$row[] = date('Y F', strtotime($from));
+		$row[] = $periodLabel;
 		$row[] = $staff->fullname();
 		$row[] = $staff->code;
 		$row[] = $staff->payroll_id;

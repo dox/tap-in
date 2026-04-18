@@ -58,6 +58,75 @@ function csrfTokenIsValid($token) {
 	return hash_equals($_SESSION['csrf_token'], $token);
 }
 
+function parseDateValue($value) {
+	if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+		return null;
+	}
+
+	$date = DateTimeImmutable::createFromFormat('Y-m-d', $value);
+	$errors = DateTimeImmutable::getLastErrors();
+
+	if ($date === false) {
+		return null;
+	}
+
+	if (is_array($errors) && ($errors['warning_count'] > 0 || $errors['error_count'] > 0)) {
+		return null;
+	}
+
+	return $date;
+}
+
+function parsePostedDateRange($dateRange) {
+	if (!is_string($dateRange) || strpos($dateRange, '|') === false) {
+		return null;
+	}
+
+	list($fromInput, $toInput) = explode('|', $dateRange, 2);
+
+	$fromDate = parseDateValue($fromInput);
+	$toDate = parseDateValue($toInput);
+
+	if (!$fromDate || !$toDate) {
+		return null;
+	}
+
+	if ($fromDate > $toDate) {
+		[$fromDate, $toDate] = [$toDate, $fromDate];
+	}
+
+	return [
+		'from' => $fromDate->format('Y-m-d'),
+		'to' => $toDate->format('Y-m-d'),
+	];
+}
+
+function summarisePostData($data, $excludedKeys = ['csrf_token']) {
+	if (!is_array($data) || empty($data)) {
+		return '';
+	}
+
+	$parts = [];
+
+	foreach ($data as $key => $value) {
+		if (in_array($key, $excludedKeys, true)) {
+			continue;
+		}
+
+		if (is_array($value)) {
+			$value = implode('|', array_map('strval', $value));
+		} elseif ($value === null) {
+			$value = '';
+		} else {
+			$value = (string)$value;
+		}
+
+		$parts[] = $key . '=' . $value;
+	}
+
+	return implode(', ', $parts);
+}
+
 function icon(string $iconName, string $size = '16'): string {
 	$iconPath = $_SERVER["DOCUMENT_ROOT"] . '/icons/' . $iconName . '.svg';  // Path to the icon file
 

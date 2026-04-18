@@ -2,6 +2,16 @@
 include_once("inc/autoload.php");
 requireLogin(); // Redirects if not logged in
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+	http_response_code(405);
+	exit('Method not allowed');
+}
+
+if (!csrfTokenIsValid($_POST['csrf_token'] ?? null)) {
+	http_response_code(403);
+	exit('Invalid CSRF token');
+}
+
 if ($user->isLoggedIn()) {
 	$requestedPage = isset($_GET['page']) ? $_GET['page'] : 'index';
 } else {
@@ -9,11 +19,11 @@ if ($user->isLoggedIn()) {
 }
 
 $pagePath = __DIR__ . "/pages/export_{$requestedPage}.php";
+$dateRange = parsePostedDateRange($_POST['date_range'] ?? null);
 
 $fileName = $requestedPage;
-if (!empty(($_POST['date_range']))) {
-	list($from, $to) = explode('|', $_POST['date_range']);
-	$fileName = $fileName . "_" . $from . "_to_" . $to;
+if ($dateRange) {
+	$fileName = $fileName . "_" . $dateRange['from'] . "_to_" . $dateRange['to'];
 }
 
 header('Content-Type: text/csv');

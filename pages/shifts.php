@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$logData = [
 					'category' => 'shift',
 					'result'   => 'success',
-					'description' => 'Shift record for ' . $uid . ' updated with ' . implode(", ", $_POST)
+					'description' => 'Shift record for ' . $uid . ' updated with ' . summarisePostData($_POST)
 				];
 				$log->create($logData);
 				
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$logData = [
 					'category' => 'shift',
 					'result'   => 'warning',
-					'description' => 'Shift record for ' . $uid . ' failed to update with ' . implode(", ", $_POST)
+					'description' => 'Shift record for ' . $uid . ' failed to update with ' . summarisePostData($_POST)
 				];
 				$log->create($logData);
 				
@@ -56,25 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 }
 
-function parseShiftFilterDate($value) {
-	if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
-		return null;
-	}
-
-	$date = DateTimeImmutable::createFromFormat('Y-m-d', $value);
-	$errors = DateTimeImmutable::getLastErrors();
-
-	if ($date === false) {
-		return null;
-	}
-
-	if (is_array($errors) && ($errors['warning_count'] > 0 || $errors['error_count'] > 0)) {
-		return null;
-	}
-
-	return $date;
-}
-
 $today = new DateTimeImmutable('today');
 $defaultTo = $today;
 $defaultFrom = $today->modify('-29 days');
@@ -82,8 +63,8 @@ $defaultFrom = $today->modify('-29 days');
 $fromInput = $_GET['from'] ?? $defaultFrom->format('Y-m-d');
 $toInput = $_GET['to'] ?? $defaultTo->format('Y-m-d');
 
-$fromDate = parseShiftFilterDate($fromInput);
-$toDate = parseShiftFilterDate($toInput);
+$fromDate = parseDateValue($fromInput);
+$toDate = parseDateValue($toInput);
 
 if (!$fromDate || !$toDate) {
 	echo alert('warning', 'Invalid date range', 'Showing the last 30 days instead.');

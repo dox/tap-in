@@ -60,6 +60,7 @@ if ($uid) {
 	<div class="row">
 		<div class="col-md-8">
 			<form class="needs-validation" method="POST" action="index.php?page=staff" novalidate>
+				<?php echo csrfInput(); ?>
 				<div class="mb-3">
 					<label for="firstname" class="form-label">First Name</label>
 					<input type="text" class="form-control" id="firstname" name="firstname" value="<?= htmlspecialchars($staff->firstname ?? '') ?>">

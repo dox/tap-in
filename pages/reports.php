@@ -26,6 +26,7 @@ for ($i = 0; $i <= 12; $i++) {
 			<ul class="list-group list-group-flush">
 				<li class="list-group-item">
 					<form action="export.php?page=totals" method="post">
+						<?php echo csrfInput(); ?>
 						<div class="input-group">
 							<select class="form-select" aria-label="Default select example" name="date_range" id="date_range">
 								<?php foreach ($months as $month): ?>
@@ -50,6 +51,7 @@ for ($i = 0; $i <= 12; $i++) {
 			<ul class="list-group list-group-flush">
 				<li class="list-group-item">
 					<form action="export.php?page=staff" method="post">
+						<?php echo csrfInput(); ?>
 						<button class="btn w-100 btn-outline-secondary" type="submit">Go</button>
 					</form>
 				</li>
@@ -65,6 +67,7 @@ for ($i = 0; $i <= 12; $i++) {
 			<ul class="list-group list-group-flush">
 				<li class="list-group-item">
 					<form action="export.php?page=shifts" method="post">
+						<?php echo csrfInput(); ?>
 						<div class="input-group">
 							<select class="form-select" aria-label="Default select example" name="date_range" id="date_range">
 								<?php foreach ($months as $month): ?>
