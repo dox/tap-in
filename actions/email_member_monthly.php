@@ -1,6 +1,18 @@
 <?php
 include_once("../inc/autoload.php");
 
+if (PHP_SAPI !== 'cli') {
+	http_response_code(403);
+
+	$log->create([
+		'category' => 'email',
+		'result' => 'warning',
+		'description' => 'Blocked non-CLI access to email_member_monthly.php from ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
+	]);
+
+	exit('Forbidden');
+}
+
 // get start/end of last month
 $start = date('Y-m-d', strtotime('monday last week'));
 $end = date('Y-m-d', strtotime('sunday last week'));
