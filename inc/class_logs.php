@@ -1,6 +1,25 @@
 <?php
 class Logs {
 	public static $table_name = 'logs';
+
+	private function getRequestIpAsInteger() {
+		if (PHP_SAPI === 'cli') {
+			return 0;
+		}
+
+		$remoteAddress = $_SERVER['REMOTE_ADDR'] ?? null;
+		$ipAsInteger = $remoteAddress ? ip2long($remoteAddress) : false;
+
+		return $ipAsInteger !== false ? $ipAsInteger : 0;
+	}
+
+	private function getLogUsername() {
+		if (!empty($_SESSION['username'])) {
+			return $_SESSION['username'];
+		}
+
+		return PHP_SAPI === 'cli' ? 'cli' : null;
+	}
 	
 	public function create($array = null) {
 		global $db;  // Assuming $db is the instance of your Database class
@@ -16,8 +35,8 @@ class Logs {
 		
 		// Use the query method from the Database class to execute the query
 		$params = [
-			':ip' => ip2long($_SERVER['REMOTE_ADDR']),
-			':username' => $_SESSION['username'],
+			':ip' => $this->getRequestIpAsInteger(),
+			':username' => $this->getLogUsername(),
 			':category' => $array['category'],
 			':result' => $array['result'],
 			':description' => $description,
