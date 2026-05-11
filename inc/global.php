@@ -127,6 +127,87 @@ function summarisePostData($data, $excludedKeys = ['csrf_token']) {
 	return implode(', ', $parts);
 }
 
+function logValueDisplay($value, $emptyValue = '(empty)') {
+	if ($value === null || $value === '') {
+		return $emptyValue;
+	}
+
+	if (is_bool($value)) {
+		return $value ? 'true' : 'false';
+	}
+
+	if (is_array($value)) {
+		return implode(', ', array_map('strval', $value));
+	}
+
+	return (string)$value;
+}
+
+function staffNameFromUid($uid) {
+	if ($uid === null || $uid === '') {
+		return '(unspecified staff)';
+	}
+
+	$staff = new Staff($uid);
+
+	if (!empty($staff->uid)) {
+		return $staff->fullname();
+	}
+
+	return 'unknown staff #' . $uid;
+}
+
+function logFieldDisplayValue($field, $value) {
+	switch ($field) {
+		case 'staff_uid':
+			return staffNameFromUid($value);
+		case 'shift_start':
+		case 'shift_end':
+			return $value ? dateDisplay($value, true) : '(empty)';
+		default:
+			return logValueDisplay($value);
+	}
+}
+
+function describeFieldChanges($before, $after, $labels = []) {
+	$before = is_array($before) ? $before : [];
+	$after = is_array($after) ? $after : [];
+	$fields = [];
+
+	foreach (array_keys($labels) as $labelField) {
+		if (array_key_exists($labelField, $before) || array_key_exists($labelField, $after)) {
+			$fields[] = $labelField;
+		}
+	}
+
+	foreach (array_unique(array_merge(array_keys($before), array_keys($after))) as $field) {
+		if (!in_array($field, $fields, true)) {
+			$fields[] = $field;
+		}
+	}
+
+	$changes = [];
+
+	foreach ($fields as $field) {
+		$label = $labels[$field] ?? $field;
+		$beforeExists = array_key_exists($field, $before);
+		$afterExists = array_key_exists($field, $after);
+
+		$beforeValue = $beforeExists ? logFieldDisplayValue($field, $before[$field]) : '(new)';
+		$afterValue = $afterExists ? logFieldDisplayValue($field, $after[$field]) : '(deleted)';
+
+		if ($beforeValue !== $afterValue) {
+			$changes[] = $label . ': ' . $beforeValue . ' -> ' . $afterValue;
+		}
+	}
+
+	if (empty($changes)) {
+		return 'no field changes';
+	}
+
+	return implode('; ', $changes);
+}
+
 function icon(string $iconName, string $size = '16'): string {
 	$iconPath = $_SERVER["DOCUMENT_ROOT"] . '/icons/' . $iconName . '.svg';  // Path to the icon file
 

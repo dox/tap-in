@@ -72,8 +72,11 @@ class Database {
 			]);
 		}
 		
-		// return the result (true/false)
-		return $result;
+		if ($result) {
+			return $this->pdo->lastInsertId();
+		}
+
+		return false;
 	}
 	
 	public function update($table, $data, $whereColumn, $whereValue) {

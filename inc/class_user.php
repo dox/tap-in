@@ -15,6 +15,66 @@ class User {
 	public function getLastError(): string {
 		return $this->lastError;
 	}
+
+	private function getLdapDisplayName($user, string $fallbackUsername): string {
+		$attributes = [];
+
+		if (is_array($user)) {
+			$attributes = $user;
+		} elseif (is_object($user) && method_exists($user, 'getAttributes')) {
+			$attributes = $user->getAttributes();
+		}
+
+		$getAttribute = function (array $keys) use ($attributes) {
+			foreach ($keys as $key) {
+				$lowerKey = strtolower($key);
+
+				if (isset($attributes[$lowerKey])) {
+					$value = $attributes[$lowerKey];
+
+					if (is_array($value)) {
+						return $value[0] ?? null;
+					}
+
+					return $value;
+				}
+
+				if (isset($attributes[$key])) {
+					$value = $attributes[$key];
+
+					if (is_array($value)) {
+						return $value[0] ?? null;
+					}
+
+					return $value;
+				}
+			}
+
+			return null;
+		};
+
+		$displayName = $getAttribute(['displayname', 'displayName', 'cn']);
+		if (!empty($displayName)) {
+			return (string)$displayName;
+		}
+
+		$givenName = $getAttribute(['givenname', 'givenName', 'firstname']);
+		$surname = $getAttribute(['sn', 'surname', 'lastname']);
+
+		if (!empty($givenName) && !empty($surname)) {
+			return trim($givenName . ' ' . $surname);
+		}
+
+		if (!empty($givenName)) {
+			return (string)$givenName;
+		}
+
+		if (!empty($surname)) {
+			return (string)$surname;
+		}
+
+		return $fallbackUsername;
+	}
 	
 	public function login(string $username, string $password): bool {
 		global $log;
@@ -60,6 +120,8 @@ class User {
 				
 				return false;
 			}
+
+			$ldapDisplayName = $this->getLdapDisplayName($user, $username);
 			
 			// Step 3: Check the username/password are correct
 			if ($connection->auth()->attempt($user['distinguishedname'][0], $password)) {
@@ -79,11 +141,12 @@ class User {
 					// The user is a member of one of the allowed groups.
 					$_SESSION['logged_in'] = true;
 					$_SESSION['username'] = $username;
+					$_SESSION['display_name'] = $ldapDisplayName;
 					
 					$logData = [
 						'category' => 'login',
 						'result'   => 'success',
-						'description' => "Login succeeded for " . $username
+						'description' => "Login succeeded for " . $ldapDisplayName . " (" . $username . ")"
 					];
 					$log->create($logData);
 					
@@ -94,7 +157,7 @@ class User {
 					$logData = [
 						'category' => 'login',
 						'result'   => 'warning',
-						'description' => "Login failed for " . $username . ": " . $this->lastError
+						'description' => "Login failed for " . $ldapDisplayName . " (" . $username . "): " . $this->lastError
 					];
 					$log->create($logData);
 					
@@ -107,7 +170,7 @@ class User {
 				$logData = [
 					'category' => 'login',
 					'result'   => 'warning',
-					'description' => "Login failed for " . $username . ": " . $this->lastError
+					'description' => "Login failed for " . $ldapDisplayName . " (" . $username . "): " . $this->lastError
 				];
 				$log->create($logData);
 				return false;

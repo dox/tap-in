@@ -5,18 +5,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		echo alert('danger', 'Error!', 'Your session token was invalid. Please try again.');
 	} else {
 		$uid = $_POST['uid'] ?? null;
+		$shiftLabels = [
+			'staff_uid' => 'Staff member',
+			'shift_start' => 'Shift start',
+			'shift_end' => 'Shift end',
+		];
+		$existingShift = $uid ? new Shift($uid) : null;
+		$existingShiftData = ($existingShift && !empty($existingShift->uid)) ? [
+			'staff_uid' => $existingShift->staff_uid,
+			'shift_start' => $existingShift->shift_start,
+			'shift_end' => $existingShift->shift_end,
+		] : [];
 
 		if (isset($_POST['delete']) && $uid) {
-			// Handle delete request
+			$deletedShiftName = !empty($existingShiftData) ? staffNameFromUid($existingShiftData['staff_uid']) : 'unknown staff';
+			$deleteDescription = 'Deleted shift' . ($uid ? ' #' . $uid : '') . ' for ' . $deletedShiftName . ': ' . describeFieldChanges($existingShiftData, [], $shiftLabels);
 			$dbAttempt = $db->delete('shifts', 'uid', $uid);
 			
 			if ($dbAttempt) {
+				$log->create([
+					'category' => 'shift',
+					'result' => 'success',
+					'description' => $deleteDescription,
+				]);
+
 				echo alert('success', "Deleted!", "Shift deleted successfully.");
 			} else {
+				$log->create([
+					'category' => 'shift',
+					'result' => 'warning',
+					'description' => 'Failed to delete shift' . ($uid ? ' #' . $uid : '') . ' for ' . $deletedShiftName . ': ' . describeFieldChanges($existingShiftData, [], $shiftLabels),
+				]);
+
 				echo alert('danger', "Error!", "Failed to delete shift.");
 			}
 		} else {
-			// Handle create/update
 			$data = [
 				'staff_uid' => $_POST['staff_uid'],
 				'shift_start' => $_POST['shift_start'],
@@ -34,23 +57,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			}
 
 			if ($dbAttempt) {
+				$shiftName = staffNameFromUid($data['staff_uid']);
+				$action = $uid ? 'Updated' : 'Created';
+				$shiftUid = $uid ?: $dbAttempt;
+				$subject = 'shift #' . $shiftUid;
+				$beforeState = $uid ? $existingShiftData : [];
+				$afterState = $data;
+
 				$logData = [
 					'category' => 'shift',
 					'result'   => 'success',
-					'description' => 'Shift record for ' . $uid . ' updated with ' . summarisePostData($_POST)
+					'description' => $action . ' ' . $subject . ' for ' . $shiftName . ': ' . describeFieldChanges($beforeState, $afterState, $shiftLabels)
 				];
 				$log->create($logData);
 				
-				echo alert('success', "Success!", "Shift updated successfully!");
+				echo alert('success', "Success!", $action . " shift successfully!");
 			} else {
+				$shiftName = staffNameFromUid($data['staff_uid']);
+				$action = $uid ? 'update' : 'create';
+				$subject = $uid ? 'shift #' . $uid : 'shift';
+				$beforeState = $uid ? $existingShiftData : [];
+				$afterState = $data;
+
 				$logData = [
 					'category' => 'shift',
 					'result'   => 'warning',
-					'description' => 'Shift record for ' . $uid . ' failed to update with ' . summarisePostData($_POST)
+					'description' => 'Failed to ' . $action . ' ' . $subject . ' for ' . $shiftName . ': ' . describeFieldChanges($beforeState, $afterState, $shiftLabels)
 				];
 				$log->create($logData);
 				
-				echo alert('danger', "Error!", "Failed to update shift.");
+				echo alert('danger', "Error!", 'Failed to ' . $action . ' shift.');
 			}
 		}
 	}

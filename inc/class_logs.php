@@ -23,27 +23,23 @@ class Logs {
 	
 	public function create($array = null) {
 		global $db;  // Assuming $db is the instance of your Database class
-		
-		// Sanitize description to prevent issues like SQL injection
-		$description = $array['description'];
-		$description = str_replace("'", "\'", $description); // Optional, if necessary
-		$description = htmlspecialchars($description, ENT_QUOTES, 'UTF-8'); // Better escape special characters
-		
-		// Prepare the SQL query with placeholders
+
+		$description = $array['description'] ?? '';
+
 		$sql = "INSERT INTO " . self::$table_name . " (ip, username, category, result, description) 
 				VALUES (:ip, :username, :category, :result, :description)";
-		
-		// Use the query method from the Database class to execute the query
+
 		$params = [
 			':ip' => $this->getRequestIpAsInteger(),
 			':username' => $this->getLogUsername(),
-			':category' => $array['category'],
-			':result' => $array['result'],
+			':category' => $array['category'] ?? 'general',
+			':result' => $array['result'] ?? 'info',
 			':description' => $description,
 		];
-		
-		// Execute the query and return the result
-		return $db->query($sql, $params);
+
+		$stmt = $db->prepare($sql);
+
+		return $stmt->execute($params);
 	}
 	
 	public function get() {
@@ -98,6 +94,24 @@ class Logs {
 		
 		return $table;
 	}
+
+	private function renderDescription($log) {
+		$description = htmlspecialchars($log['description']);
+
+		if (($log['category'] ?? '') !== 'shift') {
+			return $description;
+		}
+
+		$pattern = '/\bshift\s+#(\d+)\b/i';
+		$description = preg_replace_callback($pattern, function ($matches) {
+			$shiftUid = $matches[1];
+			$url = 'index.php?page=shift_edit&uid=' . urlencode($shiftUid);
+
+			return '<a href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '">shift #' . htmlspecialchars($shiftUid, ENT_QUOTES, 'UTF-8') . '</a>';
+		}, $description);
+
+		return $description;
+	}
 	
 	private function tableRow($log = null) {
 		// Initialize the row class based on the result
@@ -122,7 +136,7 @@ class Logs {
 			. '<td>' . htmlspecialchars($log['ip']) . '</td>'
 			. '<td>' . htmlspecialchars($log['username']) . '</td>'
 			. '<td>' . htmlspecialchars($log['category']) . '</td>'
-			. '<td>' . htmlspecialchars($log['description']) . '</td>'
+			. '<td>' . $this->renderDescription($log) . '</td>'
 			. '</tr>';
 	}
 
